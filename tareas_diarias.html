@@ -538,31 +538,41 @@
     document.getElementById('btn-eva').classList.toggle('selected', nombre === 'Eva');
   }
 
-  function getChecked(name) {
+  function getCheckedText(name) {
     return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`))
-                .map(el => el.value).join(', ') || 'Ninguno';
+                .map(el => el.closest('label').querySelector('.check-text').textContent.trim())
+                .join(' | ') || 'Ninguno';
+  }
+
+  function getRadioText(name) {
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? el.closest('label').querySelector('.radio-text').textContent.trim() : '';
   }
 
   async function enviarFormulario() {
     const nombre  = document.getElementById('nombre').value.trim();
-    const fecha   = document.getElementById('fecha').value;
+    const fechaRaw = document.getElementById('fecha').value;
     const musica  = document.querySelector('input[name="musica"]:checked');
     const dientes = document.querySelector('input[name="dientes"]:checked');
 
     if (!nombre)  { alert('👤 Elegí quién está completando el formulario.'); return; }
-    if (!fecha)   { alert('📅 Elegí la fecha.'); return; }
+    if (!fechaRaw) { alert('📅 Elegí la fecha.'); return; }
     if (!musica)  { alert('🎵 Contanos si practicaste música hoy.'); return; }
     if (!dientes) { alert('🦷 ¿Te lavaste los dientes?'); return; }
+
+    // Formatear fecha como DD/MM/YYYY
+    const [y, m, d] = fechaRaw.split('-');
+    const fecha = `${d}/${m}/${y}`;
 
     const datos = {
       nombre,
       fecha,
-      uniformes:  getChecked('uniformes'),
-      mochila:    getChecked('mochila'),
-      dormitorio: getChecked('dormitorio'),
-      tareas:     getChecked('tareas'),
-      musica:     musica.value,
-      dientes:    dientes.value,
+      uniformes:  getCheckedText('uniformes'),
+      mochila:    getCheckedText('mochila'),
+      dormitorio: getCheckedText('dormitorio'),
+      tareas:     getCheckedText('tareas'),
+      musica:     getRadioText('musica'),
+      dientes:    getRadioText('dientes'),
     };
 
     const btn = document.getElementById('btnSubmit');
