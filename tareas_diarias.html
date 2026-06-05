@@ -17,6 +17,7 @@
       --card: #ffffff;
       --primary: #5c6ef8;
       --primary-dark: #4455e0;
+      --grad-end: #9b59f7;
       --accent: #ff6b6b;
       --green: #4caf82;
       --yellow: #f7c948;
@@ -37,7 +38,7 @@
     }
 
     header {
-      background: linear-gradient(135deg, var(--primary) 0%, #9b59f7 100%);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--grad-end) 100%);
       color: white;
       text-align: center;
       padding: 28px 20px 24px;
@@ -253,7 +254,7 @@
       display: block;
       width: 100%;
       padding: 16px;
-      background: linear-gradient(135deg, var(--primary) 0%, #9b59f7 100%);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--grad-end) 100%);
       color: white;
       font-size: 1.1rem;
       font-weight: 700;
@@ -302,6 +303,30 @@
       font-weight: 700;
       cursor: pointer;
     }
+
+    /* Transición de tema */
+    header, .btn-submit, .name-btn.selected, .check-item input:checked ~ .check-box,
+    .radio-item input:checked ~ .radio-circle, input:focus { transition: all 0.35s; }
+
+    /* Puntos y nivel */
+    .level-box {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--grad-end));
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-top: 10px;
+      animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+      color: white;
+    }
+    .level-box.visible { display: flex; }
+    .level-emoji { font-size: 2rem; }
+    .level-info { flex: 1; }
+    .level-name { font-size: 1rem; font-weight: 800; line-height: 1; }
+    .level-pts  { font-size: 0.82rem; opacity: 0.88; margin-top: 3px; }
+    .level-bar-wrap { background: rgba(255,255,255,0.3); border-radius: 99px; height: 6px; margin-top: 6px; }
+    .level-bar { height: 6px; border-radius: 99px; background: white; transition: width 0.5s; }
 
     /* Racha */
     .streak-box {
@@ -356,6 +381,14 @@
       </div>
     </div>
     <input type="hidden" id="nombre" />
+    <div class="level-box" id="levelBox">
+      <span class="level-emoji" id="levelEmoji">🏕️</span>
+      <div class="level-info">
+        <div class="level-name" id="levelName">Camper</div>
+        <div class="level-pts" id="levelPts">0 puntos</div>
+        <div class="level-bar-wrap"><div class="level-bar" id="levelBar" style="width:0%"></div></div>
+      </div>
+    </div>
     <div class="streak-box" id="streakBox">
       <span class="streak-fire">🔥</span>
       <div class="streak-info">
@@ -559,6 +592,70 @@
   const dd   = String(today.getDate()).padStart(2, '0');
   document.getElementById('fecha').value = `${yyyy}-${mm}-${dd}`;
 
+  // ── Temas por hijo ──────────────────────────────────────
+  const TEMAS = {
+    Salvador: { primary: '#5c6ef8', gradEnd: '#9b59f7', bg: '#f0f4ff' },
+    Eva:      { primary: '#f85c9e', gradEnd: '#c94fd6', bg: '#fff0f7' },
+  };
+
+  function aplicarTema(nombre) {
+    const t = TEMAS[nombre] || TEMAS.Salvador;
+    const r = document.documentElement.style;
+    r.setProperty('--primary',    t.primary);
+    r.setProperty('--primary-dark', t.primary);
+    r.setProperty('--grad-end',   t.gradEnd);
+    r.setProperty('--bg',         t.bg);
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', t.primary);
+  }
+
+  // ── Niveles ─────────────────────────────────────────────
+  const NIVELES = [
+    { min: 0,   max: 99,  nombre: 'Camper',      emoji: '🏕️' },
+    { min: 100, max: 299, nombre: 'Explorador',  emoji: '🧭' },
+    { min: 300, max: 599, nombre: 'Aventurero',  emoji: '🌟' },
+    { min: 600, max: 999, nombre: 'Leyenda',     emoji: '🏆' },
+    { min: 1000, max: Infinity, nombre: '¡Dios del Rock!', emoji: '🎸' },
+  ];
+
+  function getNivel(pts) {
+    return NIVELES.find(n => pts >= n.min && pts <= n.max) || NIVELES[0];
+  }
+
+  function getPuntos(nombre) {
+    return parseInt(localStorage.getItem('puntos_' + nombre) || '0', 10);
+  }
+
+  function savePuntos(nombre, pts) {
+    localStorage.setItem('puntos_' + nombre, pts);
+  }
+
+  function calcularPuntosEnvio() {
+    let pts = 0;
+    // Checkboxes: 10 pts por item marcado
+    ['uniformes','mochila','dormitorio','tareas'].forEach(n => {
+      pts += document.querySelectorAll(`input[name="${n}"]:checked`).length * 10;
+    });
+    // Música
+    const m = document.querySelector('input[name="musica"]:checked');
+    if (m) pts += m.value === 'dos_horas_mas' ? 30 : m.value === 'una_dos_horas' ? 20 : 5;
+    // Dientes
+    const d = document.querySelector('input[name="dientes"]:checked');
+    if (d) pts += d.value === 'perfecto' ? 20 : d.value === 'bien' ? 15 : d.value === 'mas_o_menos' ? 5 : 0;
+    return pts;
+  }
+
+  function mostrarNivel(nombre) {
+    const pts = getPuntos(nombre);
+    const nv  = getNivel(pts);
+    const sig = NIVELES[NIVELES.indexOf(nv) + 1];
+    const pct = sig ? Math.round(((pts - nv.min) / (sig.min - nv.min)) * 100) : 100;
+    document.getElementById('levelEmoji').textContent = nv.emoji;
+    document.getElementById('levelName').textContent  = nv.nombre;
+    document.getElementById('levelPts').textContent   = `${pts} puntos${sig ? ` · faltan ${sig.min - pts} para ${sig.nombre}` : ' · ¡Nivel máximo!'}`;
+    document.getElementById('levelBar').style.width   = pct + '%';
+    document.getElementById('levelBox').classList.add('visible');
+  }
+
   function getStreak(nombre) {
     const raw = localStorage.getItem('streak_' + nombre);
     return raw ? JSON.parse(raw) : { count: 0, best: 0, lastDate: null };
@@ -595,6 +692,8 @@
     document.getElementById('nombre').value = nombre;
     document.getElementById('btn-salvador').classList.toggle('selected', nombre === 'Salvador');
     document.getElementById('btn-eva').classList.toggle('selected', nombre === 'Eva');
+    aplicarTema(nombre);
+    mostrarNivel(nombre);
     mostrarStreak(nombre);
   }
 
@@ -657,6 +756,12 @@
     btn.disabled = false;
     btn.textContent = '✅ Completar el día';
 
+    // Sumar puntos
+    const ptsGanados = calcularPuntosEnvio();
+    const ptsTotal   = getPuntos(nombre) + ptsGanados;
+    savePuntos(nombre, ptsTotal);
+    mostrarNivel(nombre);
+
     // Actualizar racha
     const nuevaRacha = updateStreak(nombre);
     nuevaRacha.lastDate = document.getElementById('fecha').value;
@@ -673,7 +778,8 @@
     const emojis = ['🎉','🏆','⭐','🚀','🎊'];
     document.getElementById('modalEmoji').textContent = racha >= 7 ? '🔥' : emojis[Math.floor(Math.random()*emojis.length)];
     document.getElementById('modalTitulo').textContent = `¡Genial, ${nombre}!`;
-    document.getElementById('modalMensaje').textContent = mensajeRacha;
+    const nv = getNivel(ptsTotal);
+    document.getElementById('modalMensaje').textContent = `${mensajeRacha} · +${ptsGanados} pts · ${nv.emoji} ${nv.nombre}`;
     document.getElementById('modalOverlay').classList.add('active');
   }
 
@@ -687,6 +793,12 @@
     document.getElementById('btn-salvador').classList.remove('selected');
     document.getElementById('btn-eva').classList.remove('selected');
     document.getElementById('streakBox').classList.remove('visible');
+    document.getElementById('levelBox').classList.remove('visible');
+    // Volver al tema neutro
+    const r = document.documentElement.style;
+    r.setProperty('--primary', '#5c6ef8');
+    r.setProperty('--grad-end', '#9b59f7');
+    r.setProperty('--bg', '#f0f4ff');
     const t = new Date();
     document.getElementById('fecha').value =
       `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
