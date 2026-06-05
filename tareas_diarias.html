@@ -303,6 +303,25 @@
       cursor: pointer;
     }
 
+    /* Racha */
+    .streak-box {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #fff8e1, #fff3cd);
+      border: 2px solid var(--yellow);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-top: 12px;
+      animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .streak-box.visible { display: flex; }
+    .streak-fire { font-size: 2rem; }
+    .streak-info { flex: 1; }
+    .streak-count { font-size: 1.4rem; font-weight: 800; color: #e65100; line-height: 1; }
+    .streak-label { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+    .streak-best { font-size: 0.78rem; color: var(--muted); }
+
     /* Required star */
     .required { color: var(--accent); margin-left: 2px; }
 
@@ -337,6 +356,14 @@
       </div>
     </div>
     <input type="hidden" id="nombre" />
+    <div class="streak-box" id="streakBox">
+      <span class="streak-fire">🔥</span>
+      <div class="streak-info">
+        <div class="streak-count" id="streakCount">0</div>
+        <div class="streak-label" id="streakLabel">días seguidos</div>
+        <div class="streak-best" id="streakBest"></div>
+      </div>
+    </div>
     <div class="field-group">
       <label class="field-label" for="fecha">Fecha <span class="required">*</span></label>
       <input type="date" id="fecha" required />
@@ -532,10 +559,43 @@
   const dd   = String(today.getDate()).padStart(2, '0');
   document.getElementById('fecha').value = `${yyyy}-${mm}-${dd}`;
 
+  function getStreak(nombre) {
+    const raw = localStorage.getItem('streak_' + nombre);
+    return raw ? JSON.parse(raw) : { count: 0, best: 0, lastDate: null };
+  }
+
+  function saveStreak(nombre, data) {
+    localStorage.setItem('streak_' + nombre, JSON.stringify(data));
+  }
+
+  function updateStreak(nombre) {
+    const today = document.getElementById('fecha').value; // YYYY-MM-DD
+    const s = getStreak(nombre);
+    if (!s.lastDate) return { ...s, count: 1 };
+    const last = new Date(s.lastDate);
+    const curr = new Date(today);
+    const diff = Math.round((curr - last) / 86400000);
+    if (diff === 1) return { count: s.count + 1, best: Math.max(s.best, s.count + 1), lastDate: today };
+    if (diff === 0) return s; // mismo día, no cambia
+    return { count: 1, best: Math.max(s.best, 1), lastDate: today }; // se cortó
+  }
+
+  function mostrarStreak(nombre) {
+    const s = getStreak(nombre);
+    const box = document.getElementById('streakBox');
+    const fire = s.count >= 7 ? '🔥🔥' : s.count >= 3 ? '🔥' : '⭐';
+    box.querySelector('.streak-fire').textContent = fire;
+    document.getElementById('streakCount').textContent = s.count;
+    document.getElementById('streakLabel').textContent = s.count === 1 ? 'día seguido' : 'días seguidos';
+    document.getElementById('streakBest').textContent = s.best > 1 ? `Récord: ${s.best} días` : '';
+    box.classList.add('visible');
+  }
+
   function seleccionarNombre(nombre) {
     document.getElementById('nombre').value = nombre;
     document.getElementById('btn-salvador').classList.toggle('selected', nombre === 'Salvador');
     document.getElementById('btn-eva').classList.toggle('selected', nombre === 'Eva');
+    mostrarStreak(nombre);
   }
 
   function getCheckedText(name) {
@@ -597,15 +657,23 @@
     btn.disabled = false;
     btn.textContent = '✅ Completar el día';
 
-    const mensajes = [
-      `¡Sos un campeón, ${nombre}! 🏆`,
-      `¡Lo hiciste de nuevo, ${nombre}! ⭐`,
-      `¡Increíble, ${nombre}! Sos el/la mejor 🚀`,
-    ];
+    // Actualizar racha
+    const nuevaRacha = updateStreak(nombre);
+    nuevaRacha.lastDate = document.getElementById('fecha').value;
+    nuevaRacha.best = Math.max(nuevaRacha.best || 0, nuevaRacha.count);
+    saveStreak(nombre, nuevaRacha);
+    mostrarStreak(nombre);
+
+    const racha = nuevaRacha.count;
+    const mensajeRacha = racha >= 7 ? `🔥🔥 ¡${racha} días seguidos! ¡Sos una leyenda!`
+                       : racha >= 3 ? `🔥 ¡${racha} días seguidos! ¡Seguí así!`
+                       : racha === 1 ? '¡Completaste el día! ¡A mantener la racha!'
+                       : `¡${racha} días seguidos!`;
+
     const emojis = ['🎉','🏆','⭐','🚀','🎊'];
-    document.getElementById('modalEmoji').textContent = emojis[Math.floor(Math.random()*emojis.length)];
-    document.getElementById('modalTitulo').textContent = mensajes[Math.floor(Math.random()*mensajes.length)];
-    document.getElementById('modalMensaje').textContent = 'Completaste todas tus tareas del día. ¡Qué orgullo!';
+    document.getElementById('modalEmoji').textContent = racha >= 7 ? '🔥' : emojis[Math.floor(Math.random()*emojis.length)];
+    document.getElementById('modalTitulo').textContent = `¡Genial, ${nombre}!`;
+    document.getElementById('modalMensaje').textContent = mensajeRacha;
     document.getElementById('modalOverlay').classList.add('active');
   }
 
@@ -618,6 +686,7 @@
     document.getElementById('nombre').value = '';
     document.getElementById('btn-salvador').classList.remove('selected');
     document.getElementById('btn-eva').classList.remove('selected');
+    document.getElementById('streakBox').classList.remove('visible');
     const t = new Date();
     document.getElementById('fecha').value =
       `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
