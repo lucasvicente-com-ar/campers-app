@@ -1,4 +1,4 @@
-const CACHE = 'campers-v1';
+const CACHE = 'campers-v2';
 const FILES = ['./tareas_diarias.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
