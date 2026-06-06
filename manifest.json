@@ -2,7 +2,7 @@
   "name": "Campers App",
   "short_name": "Campers",
   "description": "Bienvenido a la APP para disfrutar de la vida en Familia",
-  "start_url": "./tareas_diarias.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f0f4ff",
   "theme_color": "#5c6ef8",

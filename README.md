@@ -2,7 +2,7 @@
 
 App familiar para que Salvador y Eva registren sus tareas diarias desde el celular.
 
-**👉 [Abrir la app](https://lucasvicente-com-ar.github.io/campers-app/tareas_diarias.html)**
+**👉 [Abrir la app](https://lucasvicente-com-ar.github.io/campers-app/)**
 
 ---
 
@@ -36,7 +36,7 @@ Al enviar, los datos se guardan automáticamente en **Google Sheets** para que l
 ## Archivos
 
 ```
-tareas_diarias.html   ← La app completa
+index.html            ← La app completa
 manifest.json         ← Configuración PWA
 sw.js                 ← Service worker (funciona offline)
 icon-192.png          ← Ícono app (192×192)
@@ -78,7 +78,7 @@ GitHub Pages actualiza el sitio en ~1 minuto.
 2. Menú **Extensiones → Apps Script**
 3. Pegá el contenido de `google_apps_script.js`
 4. **Implementar → Nueva implementación** → Aplicación web → Cualquier usuario
-5. Copiá la URL generada y pegala en `tareas_diarias.html` en la línea:
+5. Copiá la URL generada y pegala en `index.html` en la línea:
    ```js
    const SHEETS_URL = 'TU_URL_AQUI';
    ```
