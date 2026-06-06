@@ -102,4 +102,48 @@ GitHub Pages actualiza el sitio en ~1 minuto.
 
 ---
 
+## 📜 El Manifiesto — No dejes que las máquinas elijan tu futuro
+
+> *Un llamado a Salvador y Eva Vicente De Pedro para que sean los arquitectos del mañana, no sus espectadores.*
+
+⚡ **Están viviendo el momento más importante de la historia humana.** La inteligencia artificial va a cambiar todo — los trabajos, la medicina, la ciencia, la música, el arte. La pregunta no es *si* va a pasar. Ya está pasando. La pregunta es: **¿van a ser los que programan el futuro, o los que simplemente lo usan?**
+
+---
+
+**I. 🧠 Tu cerebro es la herramienta más poderosa que existe**
+
+Ninguna IA puede reemplazar la curiosidad humana genuina. Las máquinas optimizan lo que ya existe. **Solo los humanos sueñan con lo que todavía no existe.** Alimentá ese cerebro: leé, preguntá, cuestioná, aprendé cosas que te parezcan imposibles. Cada hora de estudio es una ventaja que ningún algoritmo te puede robar.
+
+**II. 🎵 La creatividad es tu superpoder irreemplazable**
+
+Practicás música no para ser famoso — practicás porque **crear algo de la nada es lo más humano que existe.** Una máquina puede generar millones de canciones en un segundo, pero no puede sentir lo que vos sentís cuando encontrás una melodía que te parte el corazón. Esa emoción es tuya. Protegela. Desarrollala. Es tu escudo contra la automatización.
+
+**III. ⚙️ Entendé la tecnología, no la temas**
+
+Los que van a dominar el futuro no son los que huyen de la IA — son los que la entienden y la dirigen. **Aprendé a programar. Aprendé cómo funcionan las redes que usás todos los días.** Cuando sabés cómo está hecha la herramienta, sos el carpintero. Cuando no sabés, sos el clavo.
+
+**IV. 🌍 Usá la tecnología para resolver problemas reales**
+
+El mundo tiene problemas enormes: el clima, el hambre, las enfermedades, la desigualdad. **La generación de ustedes tiene, por primera vez en la historia, herramientas suficientes para resolver todos esos problemas.** No malgasten esas herramientas mirando videos de 30 segundos. Úsenlas para construir cosas que importen.
+
+**V. 📵 El celular es una herramienta, no una droga**
+
+Las empresas tecnológicas más inteligentes del mundo contratan equipos enteros de psicólogos para que no puedas dejar de scrollear. **No es debilidad caer en la trampa — es el diseño.** Pero ahora que lo sabés, tenés el poder de elegir. Cada vez que elegís estudiar, practicar o crear en lugar de scrollear, le ganás a un sistema de mil millones de dólares diseñado para vencerte.
+
+**VI. 🤝 La inteligencia más valiosa siempre será la emocional**
+
+Las IAs pueden ganarle al mejor ajedrecista del mundo, pero no pueden abrazar a alguien que está triste. No pueden ser amigos de verdad. No pueden liderar con empatía. **Ser un buen ser humano — honesto, empático, valiente — nunca va a ser automatizable.** El carácter importa más que el cociente intelectual.
+
+**VII. 🚀 El orden y la disciplina son el combustible del despegue**
+
+Tender la cama, ordenar la mochila, hacer las tareas — no son reglas caprichosas. **Son el entrenamiento.** Los grandes proyectos, los cohetes, las vacunas, las obras de arte que cambiaron el mundo — todos empezaron con alguien que era capaz de hacer lo que tenía que hacer, aunque no tuviera ganas. La disciplina de hoy es la libertad de mañana.
+
+---
+
+> 🏕️ **El mundo necesita lo que ustedes pueden ser.** No en veinte años. Ahora. Cada hábito que construyen hoy es un ladrillo de la persona que van a ser mañana. **Sean curiosos. Sean disciplinados. Sean creativos. Sean humanos.** Eso es lo que ninguna inteligencia artificial puede reemplazar.
+>
+> — Firmado con amor y mucha esperanza, para Salvador 👱‍♂️ y Eva 👱‍♀️
+
+---
+
 Hecho con ❤️ para la familia Vicente De Pedro
