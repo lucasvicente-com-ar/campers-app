@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>El Manifiesto — Campers App</title>
+  <style>
+    :root {
+      --bg: #0a0a12;
+      --card: #12121e;
+      --primary: #5c6ef8;
+      --accent: #f7c948;
+      --text: #f0f0ff;
+      --muted: #8888aa;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    /* Estrellas de fondo */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 50%  8%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 22%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 88% 10%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 15% 70%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 40% 60%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 80% 55%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 92% 75%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 33% 90%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 75% 92%, rgba(255,255,255,0.3) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    .hero {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .hero-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 8vw, 3.2rem);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #fff 30%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+    .divider {
+      width: 60px; height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 99px;
+      margin: 28px auto;
+    }
+
+    /* Artículos */
+    .articulo {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 20px;
+      padding: 28px 24px;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .articulo::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px; height: 100%;
+      background: linear-gradient(180deg, var(--primary), var(--accent));
+      border-radius: 4px 0 0 4px;
+    }
+    .articulo-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    .articulo h2 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+    .articulo p {
+      font-size: 0.93rem;
+      color: #b0b0cc;
+      line-height: 1.7;
+    }
+    .articulo p strong {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Bloque de alerta */
+    .alerta {
+      background: linear-gradient(135deg, #1a0f00, #2a1500);
+      border: 1px solid rgba(247,201,72,0.3);
+      border-radius: 20px;
+      padding: 28px 24px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .alerta-emoji { font-size: 2.5rem; margin-bottom: 12px; }
+    .alerta h2 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .alerta p {
+      font-size: 0.93rem;
+      color: #c8a84a;
+      line-height: 1.7;
+    }
+
+    /* Firma */
+    .firma {
+      text-align: center;
+      margin-top: 48px;
+      padding: 32px 20px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .firma-emoji { font-size: 3rem; margin-bottom: 16px; }
+    .firma h3 {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .firma p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+    .firma-names {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 24px;
+    }
+    .firma-name {
+      text-align: center;
+    }
+    .firma-name .avatar { font-size: 2rem; }
+    .firma-name .name {
+      font-weight: 800;
+      font-size: 1rem;
+      color: #fff;
+      margin-top: 4px;
+    }
+    .firma-name .linea {
+      width: 80px;
+      height: 1px;
+      background: rgba(255,255,255,0.2);
+      margin: 8px auto 0;
+    }
+
+    /* Botón volver */
+    .btn-back {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 32px;
+      width: fit-content;
+      transition: color 0.2s;
+    }
+    .btn-back:hover { color: #fff; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <a href="tareas_diarias.html" class="btn-back">← Volver a la app</a>
+
+  <div class="hero">
+    <div class="hero-label">Campers App · Manifiesto</div>
+    <h1>No dejes que las máquinas elijan tu futuro</h1>
+    <div class="divider"></div>
+    <p class="hero-sub">Un llamado a Salvador y Eva Vicente De Pedro para que sean los arquitectos del mañana, no sus espectadores.</p>
+  </div>
+
+  <div class="alerta">
+    <div class="alerta-emoji">⚡</div>
+    <h2>Están viviendo el momento más importante de la historia humana.</h2>
+    <p>La inteligencia artificial va a cambiar todo — los trabajos, la medicina, la ciencia, la música, el arte. La pregunta no es <em>si</em> va a pasar. Ya está pasando. La pregunta es: <strong>¿van a ser los que programan el futuro, o los que simplemente lo usan?</strong></p>
+  </div>
+
+  <div class="articulo">
+    <div class="articulo-num">Artículo I</div>
+    <h2>🧠 Tu cerebro es la herramienta más poderosa que existe</h2>
+    <p>Ninguna IA puede reemplazar la curiosidad humana genuina. Las máquinas optimizan lo que ya existe. <strong>Solo los humanos sueñan con lo que todavía no existe.</strong> Alimentá ese cerebro: leé, preguntá, cuestioná, aprendé cosas que te parezcan imposibles. Cada hora de estudio es una ventaja que ningún algoritmo te puede robar.</p>
+  </div>
+
+  <div class="articulo">
+    <div class="articulo-num">Artículo II</div>
+    <h2>🎵 La creatividad es tu superpoder irreemplazable</h2>
+    <p>Practicás música no para ser famoso — practicás porque <strong>crear algo de la nada es lo más humano que existe.</strong> Una máquina puede generar millones de canciones en un segundo, pero no puede sentir lo que vos sentís cuando encontrás una melodía que te parte el corazón. Esa emoción es tuya. Protegela. Desarrollala. Es tu escudo contra la automatización.</p>
+  </div>
+
+  <div class="articulo">
+    <div class="articulo-num">Artículo III</div>
+    <h2>⚙️ Entendé la tecnología, no la temas</h2>
+    <p>Los que van a dominar el futuro no son los que huyen de la IA — son los que la entienden y la dirigen. <strong>Aprendé a programar. Aprendé cómo funcionan las redes que usás todos los días.</strong> Cuando sabés cómo está hecha la herramienta, sos el carpintero. Cuando no sabés, sos el clavo.</p>
+  </div>
+
+  <div class="articulo">
+    <div class="articulo-num">Artículo IV</div>
+    <h2>🌍 Usá la tecnología para resolver problemas reales</h2>
+    <p>El mundo tiene problemas enormes: el clima, el hambre, las enfermedades, la desigualdad. <strong>La generación de ustedes tiene, por primera vez en la historia, herramientas suficientes para resolver todos esos problemas.</strong> No malgasten esas herramientas mirando videos de 30 segundos. Úsenlas para construir cosas que importen.</p>
+  </div>
+
+  <div class="articulo">
+    <div class="articulo-num">Artículo V</div>
+    <h2>📵 El celular es una herramienta, no una droga</h2>
+    <p>Las empresas tecnológicas más inteligentes del mundo contratan equipos enteros de psicólogos para que no puedas dejar de scrollear. <strong>No es debilidad caer en la trampa — es el diseño.</strong> Pero ahora que lo sabés, tenés el poder de elegir. Cada vez que elegís estudiar, practicar o crear en lugar de scrollear, le ganás a un sistema de mil millones de dólares diseñado para vencerte.</p>
+  </div>
+
+  <div class="articulo">
+    <div class="articulo-num">Artículo VI</div>
+    <h2>🤝 La inteligencia más valiosa siempre será la emocional</h2>
+    <p>Las IAs pueden ganarle al mejor ajedrecista del mundo, pero no pueden abrazar a alguien que está triste. No pueden ser amigos de verdad. No pueden liderar con empatía. <strong>Ser un buen ser humano —honesto, empático, valiente— nunca va a ser automatizable.</strong> El carácter importa más que el cociente intelectual.</p>
+  </div>
+
+  <div class="articulo">
+    <div class="articulo-num">Artículo VII</div>
+    <h2>🚀 El orden y la disciplina son el combustible del despegue</h2>
+    <p>Tender la cama, ordenar la mochila, hacer las tareas — no son reglas caprichosas. <strong>Son el entrenamiento.</strong> Los grandes proyectos, los cohetes, las vacunas, las obras de arte que cambiaron el mundo — todos empezaron con alguien que era capaz de hacer lo que tenía que hacer, aunque no tuviera ganas. La disciplina de hoy es la libertad de mañana.</p>
+  </div>
+
+  <div class="alerta" style="background: linear-gradient(135deg, #0a0f1a, #0a1530); border-color: rgba(92,110,248,0.4);">
+    <div class="alerta-emoji">🏕️</div>
+    <h2 style="color: #8899ff;">El mundo necesita lo que ustedes pueden ser.</h2>
+    <p style="color: #8899cc;">No en veinte años. Ahora. Cada hábito que construyen hoy es un ladrillo de la persona que van a ser mañana. <strong style="color: #aabbff;">Sean curiosos. Sean disciplinados. Sean creativos. Sean humanos.</strong> Eso es lo que ninguna inteligencia artificial puede reemplazar.</p>
+  </div>
+
+  <div class="firma">
+    <div class="firma-emoji">✍️</div>
+    <h3>Firmado con amor y mucha esperanza</h3>
+    <p>Este manifiesto es para ustedes, que van a vivir en un mundo<br/>que nosotros apenas podemos imaginar.</p>
+    <div class="firma-names">
+      <div class="firma-name">
+        <div class="avatar">👱‍♂️</div>
+        <div class="name">Salvador</div>
+        <div class="linea"></div>
+      </div>
+      <div class="firma-name">
+        <div class="avatar">👱‍♀️</div>
+        <div class="name">Eva</div>
+        <div class="linea"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
