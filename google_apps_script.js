@@ -26,19 +26,20 @@ function doPost(e) {
     if (!sheet) {
       sheet = ss.insertSheet(SHEET_NAME);
       sheet.appendRow([
-        'Timestamp', 'Nombre', 'Fecha',
+        'Timestamp', 'Nombre', 'Fecha', 'Ánimo',
         'Uniformes', 'Mochila', 'Dormitorio',
         'Tareas Colegio', 'Música', 'Dientes'
       ]);
-      sheet.getRange(1, 1, 1, 9).setFontWeight('bold');
+      sheet.getRange(1, 1, 1, 10).setFontWeight('bold');
     }
 
     const datos = JSON.parse(e.postData.contents);
 
     sheet.appendRow([
       new Date(),
-      datos.nombre   || '',
-      datos.fecha    || '',
+      datos.nombre     || '',
+      datos.fecha      || '',
+      datos.animo      || '',
       datos.uniformes  || '',
       datos.mochila    || '',
       datos.dormitorio || '',

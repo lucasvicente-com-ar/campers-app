@@ -55,6 +55,31 @@
     }
     header h1 { font-size: 2rem; letter-spacing: -0.5px; }
     header p { opacity: 0.88; margin-top: 4px; font-size: 0.95rem; }
+    .header-meta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .header-manifest-link {
+      color: white;
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 99px;
+      padding: 5px 13px;
+      transition: background 0.2s;
+    }
+    .header-manifest-link:hover { background: rgba(255,255,255,0.28); }
+    .header-version {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 0.5px;
+    }
 
     .container {
       max-width: 520px;
@@ -352,6 +377,83 @@
 
     /* Fecha row */
     #fecha { cursor: pointer; }
+
+    /* Estado de ánimo */
+    .mood-selector { display: flex; gap: 6px; margin-top: 4px; }
+    .mood-btn {
+      flex: 1;
+      padding: 10px 4px 8px;
+      border: 2px solid #e8e8f0;
+      border-radius: 12px;
+      background: #fafafa;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      user-select: none;
+      font-size: 1.5rem;
+    }
+    .mood-btn:hover { border-color: #c0c4f0; background: #f2f3ff; }
+    .mood-btn.selected { border-color: var(--primary); background: #eef0ff; transform: scale(1.08); }
+    .mood-label { font-size: 0.62rem; color: var(--muted); margin-top: 3px; display: block; }
+
+    /* Ranking */
+    .ranking-grid { display: flex; gap: 12px; }
+    .ranking-card {
+      flex: 1;
+      border-radius: 12px;
+      padding: 16px 12px;
+      text-align: center;
+      border: 2px solid #e8e8f0;
+      background: #fafafa;
+      transition: all 0.3s;
+    }
+    .ranking-card.winner {
+      border-color: var(--yellow);
+      background: linear-gradient(135deg, #fff8e1, #fff3cd);
+      box-shadow: 0 4px 12px rgba(247,201,72,0.3);
+    }
+    .ranking-avatar { font-size: 2rem; margin-bottom: 6px; }
+    .ranking-name { font-weight: 800; font-size: 1rem; color: var(--text); }
+    .ranking-pts { font-size: 1.8rem; font-weight: 800; color: var(--primary); line-height: 1; margin: 6px 0 2px; }
+    .ranking-pts-label { font-size: 0.72rem; color: var(--muted); margin-bottom: 4px; }
+    .ranking-level { font-size: 0.82rem; color: var(--muted); }
+    .ranking-streak { font-size: 0.82rem; margin-top: 6px; min-height: 18px; }
+    .ranking-crown { font-size: 1.2rem; display: block; margin-bottom: 2px; min-height: 1.4rem; }
+
+    /* Recompensas */
+    .reward-list { display: flex; flex-direction: column; gap: 10px; }
+    .reward-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 2px solid #e8e8f0;
+      border-radius: 10px;
+      background: #fafafa;
+      transition: all 0.2s;
+    }
+    .reward-emoji { font-size: 1.8rem; flex-shrink: 0; }
+    .reward-info { flex: 1; }
+    .reward-name { font-weight: 700; font-size: 0.95rem; }
+    .reward-cost { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+    .reward-btn {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 8px;
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .reward-btn:disabled { background: #c8c8e0; cursor: not-allowed; }
+    .reward-btn.redeemed { background: var(--green); }
+    .reward-no-user { text-align: center; color: var(--muted); font-size: 0.9rem; padding: 8px 0; }
+    .reward-pts-display { font-size: 0.85rem; color: var(--muted); margin-bottom: 12px; }
+    .reward-pts-display strong { color: var(--primary); }
   </style>
 </head>
 <body>
@@ -359,6 +461,10 @@
 <header>
   <h1>🏕️ Campers App</h1>
   <p>Bienvenido a la APP para disfrutar de la vida en Familia</p>
+  <div class="header-meta">
+    <a href="manifiesto.html" class="header-manifest-link">📜 Manifiesto</a>
+    <span class="header-version">v2.0.0</span>
+  </div>
 </header>
 
 <div class="container">
@@ -400,6 +506,45 @@
     <div class="field-group">
       <label class="field-label" for="fecha">Fecha <span class="required">*</span></label>
       <input type="date" id="fecha" lang="es" required />
+    </div>
+    <div class="field-group">
+      <label class="field-label">¿Cómo estuvo tu día? <span class="required">*</span></label>
+      <div class="mood-selector" id="moodSelector">
+        <div class="mood-btn" onclick="seleccionarAnimo('genial', this)">😁<span class="mood-label">Genial</span></div>
+        <div class="mood-btn" onclick="seleccionarAnimo('bien', this)">😊<span class="mood-label">Bien</span></div>
+        <div class="mood-btn" onclick="seleccionarAnimo('normal', this)">😐<span class="mood-label">Normal</span></div>
+        <div class="mood-btn" onclick="seleccionarAnimo('cansado', this)">😴<span class="mood-label">Cansado</span></div>
+        <div class="mood-btn" onclick="seleccionarAnimo('dificil', this)">😤<span class="mood-label">Difícil</span></div>
+      </div>
+      <input type="hidden" id="animo" />
+    </div>
+  </div>
+
+  <!-- RANKING -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#fff8e1">🏆</div>
+      <div class="card-title">Ranking Familiar</div>
+    </div>
+    <div class="ranking-grid">
+      <div class="ranking-card" id="rankingSalvador">
+        <span class="ranking-crown" id="crownSalvador"></span>
+        <div class="ranking-avatar">👱‍♂️</div>
+        <div class="ranking-name">Salvador</div>
+        <div class="ranking-pts" id="rankPtsSalvador">0</div>
+        <div class="ranking-pts-label">puntos</div>
+        <div class="ranking-level" id="rankLvlSalvador">🏕️ Camper</div>
+        <div class="ranking-streak" id="rankStreakSalvador"></div>
+      </div>
+      <div class="ranking-card" id="rankingEva">
+        <span class="ranking-crown" id="crownEva"></span>
+        <div class="ranking-avatar">👱‍♀️</div>
+        <div class="ranking-name">Eva</div>
+        <div class="ranking-pts" id="rankPtsEva">0</div>
+        <div class="ranking-pts-label">puntos</div>
+        <div class="ranking-level" id="rankLvlEva">🏕️ Camper</div>
+        <div class="ranking-streak" id="rankStreakEva"></div>
+      </div>
     </div>
   </div>
 
@@ -565,6 +710,17 @@
     </ul>
   </div>
 
+  <!-- RECOMPENSAS -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#fce4ec">🎁</div>
+      <div class="card-title">Recompensas</div>
+    </div>
+    <div id="rewardsContent">
+      <p class="reward-no-user">Elegí tu nombre para ver las recompensas disponibles.</p>
+    </div>
+  </div>
+
   <button class="btn-submit" id="btnSubmit" onclick="enviarFormulario()">
     ✅ Completar el día
   </button>
@@ -695,6 +851,8 @@
     aplicarTema(nombre);
     mostrarNivel(nombre);
     mostrarStreak(nombre);
+    actualizarRanking();
+    mostrarRecompensas(nombre);
   }
 
   function getCheckedText(name) {
@@ -713,9 +871,11 @@
     const fechaRaw = document.getElementById('fecha').value;
     const musica  = document.querySelector('input[name="musica"]:checked');
     const dientes = document.querySelector('input[name="dientes"]:checked');
+    const animo   = document.getElementById('animo').value;
 
     if (!nombre)  { alert('👤 Elegí quién está completando el formulario.'); return; }
     if (!fechaRaw) { alert('📅 Elegí la fecha.'); return; }
+    if (!animo)   { alert('😊 Contanos cómo estuvo tu día.'); return; }
     if (!musica)  { alert('🎵 Contanos si practicaste música hoy.'); return; }
     if (!dientes) { alert('🦷 ¿Te lavaste los dientes?'); return; }
 
@@ -723,9 +883,11 @@
     const [y, m, d] = fechaRaw.split('-');
     const fecha = `${d}/${m}/${y}`;
 
+    const ANIMO_TEXT = { genial: '😁 Genial', bien: '😊 Bien', normal: '😐 Normal', cansado: '😴 Cansado', dificil: '😤 Difícil' };
     const datos = {
       nombre,
       fecha,
+      animo:      ANIMO_TEXT[animo] || animo,
       uniformes:  getCheckedText('uniformes'),
       mochila:    getCheckedText('mochila'),
       dormitorio: getCheckedText('dormitorio'),
@@ -761,6 +923,8 @@
     const ptsTotal   = getPuntos(nombre) + ptsGanados;
     savePuntos(nombre, ptsTotal);
     mostrarNivel(nombre);
+    actualizarRanking();
+    mostrarRecompensas(nombre);
 
     // Actualizar racha
     const nuevaRacha = updateStreak(nombre);
@@ -804,16 +968,108 @@
       `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
     document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
     document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('animo').value = '';
+    mostrarRecompensas('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 </script>
 
 
-<div style="text-align:center; padding: 8px 0 0; opacity: 0.5;">
-  <a href="manifiesto.html" style="font-size:0.8rem; color: var(--muted); text-decoration: none;">📜 Leer el Manifiesto</a>
-</div>
 
 <script>
+  // ── Estado de ánimo ─────────────────────────────────────
+  function seleccionarAnimo(valor, btn) {
+    document.getElementById('animo').value = valor;
+    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  // ── Ranking ──────────────────────────────────────────────
+  function actualizarRanking() {
+    const ptsSal = getPuntos('Salvador');
+    const ptsEva = getPuntos('Eva');
+    ['Salvador', 'Eva'].forEach(nombre => {
+      const pts = getPuntos(nombre);
+      const nv  = getNivel(pts);
+      const s   = getStreak(nombre);
+      document.getElementById('rankPts' + nombre).textContent  = pts;
+      document.getElementById('rankLvl' + nombre).textContent  = nv.emoji + ' ' + nv.nombre;
+      document.getElementById('rankStreak' + nombre).textContent = s.count > 0 ? '🔥 ' + s.count + ' días' : '';
+    });
+    const empate = ptsSal === ptsEva;
+    document.getElementById('rankingSalvador').classList.toggle('winner', !empate && ptsSal > ptsEva);
+    document.getElementById('rankingEva').classList.toggle('winner', !empate && ptsEva > ptsSal);
+    document.getElementById('crownSalvador').textContent = (!empate && ptsSal > ptsEva) ? '👑' : '';
+    document.getElementById('crownEva').textContent      = (!empate && ptsEva > ptsSal) ? '👑' : '';
+  }
+
+  // ── Recompensas ──────────────────────────────────────────
+  const RECOMPENSAS = [
+    { id: 'pantalla',  emoji: '🎮', nombre: '1 hora extra de pantalla', costo: 100 },
+    { id: 'cena',      emoji: '🍕', nombre: 'Elegir la cena',           costo: 150 },
+    { id: 'pelicula',  emoji: '🎬', nombre: 'Película en familia',       costo: 200 },
+    { id: 'sorpresa',  emoji: '🎁', nombre: 'Sorpresa especial',         costo: 300 },
+    { id: 'actividad', emoji: '🏖️', nombre: 'Actividad especial',        costo: 500 },
+  ];
+
+  function getCanjes(nombre) {
+    const raw = localStorage.getItem('canjes_' + nombre);
+    return raw ? JSON.parse(raw) : {};
+  }
+
+  function saveCanjes(nombre, data) {
+    localStorage.setItem('canjes_' + nombre, JSON.stringify(data));
+  }
+
+  function mostrarRecompensas(nombre) {
+    const content = document.getElementById('rewardsContent');
+    if (!nombre) {
+      content.innerHTML = '<p class="reward-no-user">Elegí tu nombre para ver las recompensas disponibles.</p>';
+      return;
+    }
+    const pts    = getPuntos(nombre);
+    const canjes = getCanjes(nombre);
+    content.innerHTML =
+      '<p class="reward-pts-display">Tus puntos: <strong>' + pts + ' pts</strong></p>' +
+      '<div class="reward-list">' +
+      RECOMPENSAS.map(r => {
+        const canjeado     = canjes[r.id] || 0;
+        const puedeCanjear = pts >= r.costo;
+        return '<div class="reward-item">' +
+          '<span class="reward-emoji">' + r.emoji + '</span>' +
+          '<div class="reward-info">' +
+            '<div class="reward-name">' + r.nombre + '</div>' +
+            '<div class="reward-cost">' + r.costo + ' pts' + (canjeado > 0 ? ' · Canjeado ' + canjeado + 'x' : '') + '</div>' +
+          '</div>' +
+          '<button class="reward-btn' + (canjeado > 0 ? ' redeemed' : '') + '"' +
+            ' onclick="canjearRecompensa(\'' + nombre + '\', \'' + r.id + '\')"' +
+            (puedeCanjear ? '' : ' disabled') + '>' +
+            (canjeado > 0 ? '✅ Otro' : '🎁 Canjear') +
+          '</button>' +
+        '</div>';
+      }).join('') +
+      '</div>';
+  }
+
+  function canjearRecompensa(nombre, rewardId) {
+    const reward = RECOMPENSAS.find(r => r.id === rewardId);
+    if (!reward) return;
+    const pts = getPuntos(nombre);
+    if (pts < reward.costo) { alert('No tenés suficientes puntos.'); return; }
+    if (!confirm('¿Canjear "' + reward.nombre + '" por ' + reward.costo + ' pts?')) return;
+    savePuntos(nombre, pts - reward.costo);
+    const canjes    = getCanjes(nombre);
+    canjes[rewardId] = (canjes[rewardId] || 0) + 1;
+    saveCanjes(nombre, canjes);
+    mostrarNivel(nombre);
+    actualizarRanking();
+    mostrarRecompensas(nombre);
+  }
+
+  // Ranking inicial al cargar
+  actualizarRanking();
+
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js');
   }
