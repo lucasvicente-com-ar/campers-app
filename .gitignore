@@ -1,0 +1,14 @@
+# Archivos de Google Drive
+*.gsheet
+*.gdoc
+*.gslides
+
+# Archivo ZIP de distribución
+campers-app.zip
+
+# Carpeta de configuración local
+.claude/
+
+# Windows
+Thumbs.db
+desktop.ini
