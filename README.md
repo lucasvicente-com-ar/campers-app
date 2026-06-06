@@ -142,7 +142,7 @@ Tender la cama, ordenar la mochila, hacer las tareas — no son reglas caprichos
 
 > 🏕️ **El mundo necesita lo que ustedes pueden ser.** No en veinte años. Ahora. Cada hábito que construyen hoy es un ladrillo de la persona que van a ser mañana. **Sean curiosos. Sean disciplinados. Sean creativos. Sean humanos.** Eso es lo que ninguna inteligencia artificial puede reemplazar.
 >
-> — Firmado con amor y mucha esperanza, para Salvador 👱‍♂️ y Eva 👱‍♀️
+> — Firmado con amor y mucha esperanza, Papá 👨 y Mamá 👩
 
 ---
 
