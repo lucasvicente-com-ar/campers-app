@@ -142,7 +142,10 @@ Tender la cama, ordenar la mochila, hacer las tareas — no son reglas caprichos
 
 > 🏕️ **El mundo necesita lo que ustedes pueden ser.** No en veinte años. Ahora. Cada hábito que construyen hoy es un ladrillo de la persona que van a ser mañana. **Sean curiosos. Sean disciplinados. Sean creativos. Sean humanos.** Eso es lo que ninguna inteligencia artificial puede reemplazar.
 >
-> — Firmado con amor y mucha esperanza, Papá 👨 y Mamá 👩
+> *"El sentido de la vida es transformar una existencia finita, vulnerable y parcialmente absurda en una trayectoria consciente de cuidado, creación, verdad y responsabilidad."*
+>
+> — Firmado con amor y mucha esperanza, Papá 👨 y Mamá 👩  
+> *Lucas M. Vicente*
 
 ---
 
