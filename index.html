@@ -549,7 +549,7 @@
   </div>
 
   <!-- UNIFORMES -->
-  <div class="card">
+  <div class="card" id="card-uniformes">
     <div class="card-header">
       <div class="card-icon icon-uniformes">👕</div>
       <div class="card-title">Uniformes <span class="required">*</span></div>
@@ -623,12 +623,12 @@
       <label class="check-item">
         <input type="checkbox" name="tareas" value="hacer_tareas" />
         <span class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        <span class="check-text">Hacer tareas</span>
+        <span class="check-text" id="tareas-texto-1">Hacer tareas</span>
       </label>
       <label class="check-item">
         <input type="checkbox" name="tareas" value="preparar_mochila" />
         <span class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-        <span class="check-text">Preparar mochila para mañana</span>
+        <span class="check-text" id="tareas-texto-2">Preparar mochila para mañana</span>
       </label>
     </div>
   </div>
@@ -747,6 +747,33 @@
   const mm   = String(today.getMonth() + 1).padStart(2, '0');
   const dd   = String(today.getDate()).padStart(2, '0');
   document.getElementById('fecha').value = `${yyyy}-${mm}-${dd}`;
+
+  // ── Adaptación de tareas según día de la semana ─────────
+  function adaptarFormularioAlDia(fechaISO) {
+    if (!fechaISO) return;
+    // Usar T00:00 para evitar desfase horario
+    const d = new Date(fechaISO + 'T00:00');
+    const dia = d.getDay(); // 0=Dom, 1=Lun, ..., 6=Sáb
+    const esFinDeSemana = dia === 0 || dia === 6;
+    const esDomingo = dia === 0;
+
+    // Uniformes: ocultar en fines de semana
+    document.getElementById('card-uniformes').style.display = esFinDeSemana ? 'none' : '';
+
+    // Tareas colegio: texto especial el domingo
+    document.getElementById('tareas-texto-1').textContent = esDomingo
+      ? 'Revisar si hay tareas para el lunes'
+      : 'Hacer tareas';
+    document.getElementById('tareas-texto-2').textContent = esDomingo
+      ? 'Preparar la mochila para el lunes'
+      : 'Preparar mochila para mañana';
+  }
+
+  // Llamar al cargar y cada vez que cambien la fecha
+  adaptarFormularioAlDia(document.getElementById('fecha').value);
+  document.getElementById('fecha').addEventListener('change', function() {
+    adaptarFormularioAlDia(this.value);
+  });
 
   // ── Temas por hijo ──────────────────────────────────────
   const TEMAS = {
@@ -964,8 +991,9 @@
     r.setProperty('--grad-end', '#9b59f7');
     r.setProperty('--bg', '#f0f4ff');
     const t = new Date();
-    document.getElementById('fecha').value =
-      `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
+    const nuevaFecha = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
+    document.getElementById('fecha').value = nuevaFecha;
+    adaptarFormularioAlDia(nuevaFecha);
     document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
     document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
     document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
