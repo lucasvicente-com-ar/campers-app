@@ -126,6 +126,50 @@
     .icon-lectura { background: #e8f5e9; }
     .icon-juego   { background: #fef3c7; }
 
+    /* Dato curioso del día */
+    .dato-card {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .dato-card::before {
+      content: '';
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 120px; height: 120px;
+      background: rgba(92,110,248,0.15);
+      border-radius: 50%;
+    }
+    .dato-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #7b8ff5;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .dato-numero {
+      font-size: 0.65rem;
+      background: rgba(92,110,248,0.25);
+      border-radius: 99px;
+      padding: 2px 8px;
+      color: #9ba8f8;
+    }
+    .dato-texto {
+      font-size: 0.95rem;
+      color: #e8eaff;
+      line-height: 1.6;
+      font-weight: 500;
+      position: relative;
+      z-index: 1;
+    }
+
     /* Textarea de resumen */
     .lectura-memo {
       width: 100%;
@@ -639,6 +683,12 @@
 </header>
 
 <div class="container">
+
+  <!-- DATO CURIOSO DEL DÍA -->
+  <div class="dato-card">
+    <div class="dato-label">💡 Dato curioso del día <span class="dato-numero" id="dato-num"></span></div>
+    <div class="dato-texto" id="dato-texto">Cargando…</div>
+  </div>
 
   <!-- PERFIL -->
   <div class="card">
@@ -1370,6 +1420,332 @@
 </script>
 
 <script>
+  // ── Dato curioso del día ────────────────────────────────
+  const DATOS_CURIOSOS = [
+    // Animales
+    'Los pulpos tienen tres corazones y sangre azul.',
+    'La miel nunca se vence: se encontró miel comestible en tumbas egipcias de 3.000 años.',
+    'Los delfines duermen con un ojo abierto para mantenerse alertas.',
+    'El corazón de una ballena azul es tan grande que un niño podría gatear por sus arterias.',
+    'Las huellas dactilares de los koalas son casi idénticas a las de los humanos.',
+    'Los flamencos son blancos al nacer — el color rosa viene de los camarones que comen.',
+    'Una hormiga puede cargar hasta 50 veces su propio peso.',
+    'Los elefantes son los únicos animales que no pueden saltar.',
+    'Los tiburones son más antiguos que los árboles — llevan 400 millones de años en la Tierra.',
+    'Los caracoles pueden dormir hasta 3 años seguidos.',
+    'Las mariposas prueban la comida con los pies.',
+    'Los pingüinos le proponen "matrimonio" a su pareja con una piedra.',
+    'Los cuervos son capaces de reconocer caras humanas y recordarlas por años.',
+    'Los cocodrilos llevan 200 millones de años sin cambiar prácticamente nada.',
+    'Los caballos y las vacas duermen de pie, pero solo sueñan acostados.',
+    'Los gatos domésticos comparten el 95,6% de su ADN con los tigres.',
+    'Los pulpos cambian de color en menos de un segundo para camuflarse.',
+    'Las abejas tienen cinco ojos: dos grandes y tres pequeños.',
+    'Los delfines se llaman entre sí con "nombres" únicos — silbidos específicos para cada individuo.',
+    'Los elefantes son los únicos animales que hacen rituales para despedir a sus muertos.',
+    'Un oso polar tiene la piel negra debajo del pelaje blanco para absorber mejor el calor del sol.',
+    'Las langostas de mar son biológicamente casi inmortales: no envejecen, solo mueren por depredadores.',
+    'Los gorilas aprendieron lenguaje de señas y pueden comunicarse con humanos.',
+    'Un pez payaso siempre nace macho — si la hembra del grupo muere, el macho cambia de sexo.',
+    'Los cerdos son más inteligentes que los perros y pueden aprender tareas muy complejas.',
+    'Un colibrí late el corazón 1.200 veces por minuto en pleno vuelo.',
+    'Los perros pueden oler enfermedades como el cáncer con una precisión del 97%.',
+    'Los leones duermen entre 16 y 20 horas por día.',
+    'Las ratas se ríen cuando las hacen cosquillas — emiten ultrasonidos de alegría.',
+    'Los cuervos fabrican herramientas para resolver problemas, igual que los chimpancés.',
+    'La hormiga reina puede vivir hasta 30 años.',
+    'Los loros grises africanos pueden tener el vocabulario de un niño de 5 años.',
+    'Los calamares gigantes tienen ojos del tamaño de un plato de 30 cm de diámetro.',
+    'Un elefante africano puede oler agua a 19 km de distancia.',
+    'Las ballenas jorobadas crean canciones que evolucionan y cambian cada temporada.',
+    'Un albatroz puede volar 120.000 km al año sin tocar tierra.',
+    'El ADN de los humanos y los chimpancés es un 98,7% idéntico.',
+    'Los pingüinos emperadores machos incuban el huevo sobre sus patas durante 65 días sin comer.',
+    'Los chimpancés pueden aprender a usar tabletas para comunicarse con humanos.',
+    'Una medusa llamada Turritopsis dohrnii puede rejuvenecer y volver a empezar su ciclo de vida.',
+    'El cerebro de un pulpo está distribuido en sus brazos — cada brazo piensa un poco por sí solo.',
+    'Las tortugas pueden respirar por la cola en invierno para absorber oxígeno disuelto en el agua.',
+    'Las jirafas solo duermen entre 10 minutos y 2 horas por día.',
+    'Los tiburones no tienen huesos — su esqueleto es completamente de cartílago.',
+    'Los cuervos juegan — hacen "snowboard" en techos nevados usando tapas de botellas.',
+    'La lengua de una jirafa mide 45 cm y es azul-oscura para protegerse del sol.',
+    'Las serpientes no tienen párpados — duermen con los ojos abiertos.',
+    'Las arañas extienden sus patas usando presión hidráulica, no músculos.',
+    'Los tiburones blancos pueden vivir hasta 70 años.',
+    'Los tiburones pueden perder y renovar hasta 50.000 dientes en su vida.',
+    // Espacio
+    'El sol contiene el 99,86% de toda la masa del sistema solar.',
+    'Un día en Venus dura más que un año en Venus — rota muy lento pero orbita rápido.',
+    'Hay más estrellas en el universo que granos de arena en todas las playas de la Tierra.',
+    'La huella que Neil Armstrong dejó en la Luna en 1969 todavía está ahí.',
+    'El espacio está en silencio total — no hay aire para transmitir el sonido.',
+    'Saturno es el único planeta menos denso que el agua: flotaría en un océano gigante.',
+    'La Vía Láctea tiene unos 200.000 millones de estrellas.',
+    'Un año en Plutón equivale a 248 años en la Tierra.',
+    'El sol es tan grande que cabrían 1,3 millones de planetas Tierra dentro de él.',
+    'Los astronautas crecen hasta 5 cm en el espacio porque la gravedad no comprime la columna.',
+    'Marte tiene la montaña más alta del sistema solar: el Olympus Mons, 3 veces más alto que el Everest.',
+    'La luz del sol tarda 8 minutos en llegar a la Tierra.',
+    'Júpiter tiene una tormenta activa desde hace más de 350 años: la Gran Mancha Roja.',
+    'El universo tiene unos 13.800 millones de años.',
+    'Neptuno tiene vientos de 2.100 km/h — los más rápidos del sistema solar.',
+    'La ISS orbita la Tierra 16 veces por día.',
+    'En el espacio, si lloraras, las lágrimas formarían una bola y flotarían ante tu cara.',
+    'Hay más de 500.000 trozos de basura espacial orbitando la Tierra en este momento.',
+    'La gravedad de la luna es la causa de las mareas en todos los océanos del planeta.',
+    'En Marte, una puesta de sol es de color azul.',
+    'El sol tiene 4.600 millones de años y le quedan unos 5.000 millones más.',
+    'Los astronautas en la ISS ven 16 amaneceres y 16 atardeceres por día.',
+    'Las estrellas de neutrones son tan densas que una cucharadita pesaría 10 millones de toneladas.',
+    'El cometa Halley pasa cerca de la Tierra cada 75-76 años.',
+    'En el espacio, el fuego adopta forma esférica — no triangular como en la Tierra.',
+    'El oro no se formó en la Tierra — vino del espacio, en colisiones de estrellas de neutrones.',
+    'La sonda Voyager 1 tardó 35 años en salir del sistema solar tras ser lanzada en 1977.',
+    'La luna Europa de Júpiter tiene un océano de agua líquida bajo su capa de hielo.',
+    'El Monte Olimpo en Marte es tan alto que su cima sobresale de la atmósfera marciana.',
+    'Las huellas del astronauta Neil Armstrong en la Luna durarán más de 100 millones de años.',
+    // Ciencia y física
+    'El agua es el único elemento natural que se expande al congelarse.',
+    'El átomo es casi todo espacio vacío — si el núcleo fuera del tamaño de una naranja, los electrones estarían a 10 km.',
+    'La velocidad de la luz es 299.792 km por segundo.',
+    'La velocidad de un estornudo es de 160 km/h.',
+    'Un gramo de antimateria liberaría energía equivalente a una bomba atómica.',
+    'El fuego no tiene sombra porque emite su propia luz.',
+    'Los cristales de copo de nieve siempre tienen 6 lados, sin excepción.',
+    'La velocidad del sonido es 1.235 km/h en el aire a nivel del mar.',
+    'El sonido viaja 4 veces más rápido en el agua que en el aire.',
+    'El hielo seco no se derrite — pasa directamente de sólido a gas (sublimación).',
+    'La presión en el fondo del océano es 1.000 veces mayor que en la superficie.',
+    'El agua puede hervir y congelarse al mismo tiempo en condiciones específicas de presión (punto triple).',
+    'Un rayo calienta el aire a su alrededor a 30.000°C — cinco veces más que la superficie del sol.',
+    'El cuarzo, cuando se lo presiona, genera electricidad — así funcionan los relojes de cuarzo.',
+    'La velocidad de la señal nerviosa en el cuerpo humano puede llegar a 431 km/h.',
+    'El volcán Krakatoa explotó en 1883 y su sonido se escuchó en Australia, a 4.800 km de distancia.',
+    'La luna se aleja 3,8 cm de la Tierra cada año.',
+    'El bambú es la planta que más rápido crece del mundo: hasta 91 cm por día.',
+    'El ámbar es resina de árbol fosilizada y puede conservar insectos perfectamente por millones de años.',
+    'El agua puede subir por tubos muy finos contra la gravedad — se llama capilaridad, y así los árboles riegan sus hojas.',
+    'Un GPS necesita tener en cuenta la relatividad de Einstein para funcionar — sin ese ajuste, erraría 10 km al día.',
+    'Las luciérnagas convierten el 96% de su energía en luz — son el organismo bioluminiscente más eficiente.',
+    'El sonido de un chasquido de dedos dura menos de un milisegundo.',
+    'El cielo es azul porque las moléculas del aire dispersan más la luz azul que la roja.',
+    'Las nubes pesan millones de toneladas, pero flotan porque el agua se distribuye en gotitas microscópicas.',
+    'El mercurio líquido puede disolver el oro — por eso los termómetros de mercurio son peligrosos cerca del oro.',
+    'El olor a lluvia tiene nombre: "petricor" — es causado por bacterias del suelo al mojarse.',
+    'La Torre Eiffel crece 15 cm en verano por la dilatación térmica del metal.',
+    'La electricidad en un rayo viaja a 270.000 km/h.',
+    // Cuerpo humano
+    'El cuerpo humano tiene más bacterias que células propias (aunque son mucho más pequeñas).',
+    'Los huesos humanos son más fuertes que el hormigón del mismo peso.',
+    'El estómago se regenera completamente cada 3-4 días para no digerirse a sí mismo.',
+    'Tu corazón late unos 100.000 veces por día — 35 millones al año.',
+    'Los ojos humanos pueden distinguir hasta 10 millones de colores diferentes.',
+    'El cuerpo humano tiene 206 huesos, pero los bebés nacen con más de 300 — muchos se fusionan al crecer.',
+    'Los pulmones desplegados cubrirían una cancha de tenis.',
+    'La nariz puede detectar más de un billón de olores diferentes.',
+    'El cerebro consume el 20% de la energía del cuerpo aunque pesa solo el 2%.',
+    'Es imposible estornudar con los ojos abiertos — se cierran de forma involuntaria.',
+    'El hígado puede regenerarse completamente — con solo el 25% funciona correctamente.',
+    'Los seres humanos son los únicos animales que se ruborizan.',
+    'El cuerpo humano emite luz propia, pero tan débil que el ojo no la puede ver.',
+    'El esqueleto humano se renueva completamente cada 10 años.',
+    'La piel es el órgano más grande del cuerpo humano.',
+    'El bostezar es contagioso incluso con perros — si bostezás frente a tu perro, él también bosteza.',
+    'El cerebro humano genera suficiente electricidad como para encender una lamparita.',
+    'Los bebés son incapaces de llorar con lágrimas hasta los 3 meses de vida.',
+    'El ojo humano puede detectar una vela encendida a 48 km de distancia en una noche clara.',
+    'Los dedos no tienen músculos propios — se mueven gracias a tendones que vienen del antebrazo.',
+    'El cerebro de un niño de 3 años es 3 veces más activo que el de un adulto.',
+    'Las uñas crecen más rápido en verano que en invierno.',
+    'Un adulto promedio camina el equivalente a 3 vueltas a la Tierra a lo largo de su vida.',
+    'Las lágrimas de tristeza tienen diferente composición química que las de alegría.',
+    'Los humanos son los únicos primates sin pelo en la palma de las manos.',
+    // Historia
+    'Cleopatra vivió más cerca en el tiempo de la llegada del hombre a la luna que de la construcción de las pirámides.',
+    'Los vikingos llegaron a América 500 años antes que Colón.',
+    'La Gran Muralla China no es visible desde el espacio a simple vista — es un mito extendido.',
+    'Napoleón no era bajo — medía 1,70 m, la altura promedio de su época.',
+    'Shakespeare inventó más de 1.700 palabras en inglés que usamos hoy.',
+    'El chocolate fue usado como moneda en el Imperio Azteca.',
+    'La primera computadora pesaba 27 toneladas y ocupaba una habitación entera.',
+    'Los egipcios inventaron el año de 365 días y también el año bisiesto.',
+    'Los romanos tenían calefacción central — usaban suelos huecos por donde circulaba aire caliente.',
+    'La escritura tiene unos 5.000 años de antigüedad.',
+    'La Estatua de la Libertad era de cobre brillante cuando se inauguró — el verde es oxidación.',
+    'Los faraones usaban miel como medicina y tenían razón: tiene propiedades antibacterianas.',
+    'Oxford es más antigua que los Aztecas — fue fundada en 1096 y el Imperio Azteca en 1428.',
+    'La primera fotografía de la historia tardó 8 horas de exposición en tomarse.',
+    'El juego de ajedrez fue inventado en India hace unos 1.500 años.',
+    'Los romanos pagaban a sus soldados parcialmente con sal — de ahí viene la palabra "salario".',
+    'Los dinosaurios existieron durante 165 millones de años; los humanos modernos llevamos solo 300.000.',
+    'La primera película de ficción de la historia fue "Viaje a la luna" de Méliès, en 1902.',
+    'El papel fue inventado en China hace unos 2.000 años — antes se usaban papiro, cuero y arcilla.',
+    'El primer libro impreso con tipos móviles fue la Biblia de Gutenberg, en 1455.',
+    // Tecnología
+    'El primer mouse de computadora era de madera y fue inventado en 1964.',
+    'Google procesa más de 8.500 millones de búsquedas por día.',
+    'El primer email fue enviado en 1971 entre dos computadoras en el mismo cuarto.',
+    'Un iPhone moderno tiene más poder de cómputo que todos los computadores de la NASA en 1969 juntos.',
+    'El código QR fue inventado en Japón en 1994 para rastrear piezas de automóviles.',
+    'El primer videojuego comercial fue Pong, en 1972.',
+    'El primer videojuego de la historia fue Tennis for Two, en 1958.',
+    'Wikipedia tiene más de 60 millones de artículos en todos los idiomas.',
+    'El Bluetooth recibe su nombre de Harald Bluetooth, un rey vikingo del siglo X.',
+    'El primer satélite artificial fue el Sputnik soviético, lanzado en 1957.',
+    'Los primeros lentes de contacto eran de vidrio — inventados en 1888.',
+    'El primer auto que cruzó Europa solo conducido por computadora lo hizo en 1995.',
+    'El primer reloj de pulsera fue diseñado para mujeres — los hombres consideraban "poco masculino" usarlo.',
+    'El acero inoxidable fue inventado accidentalmente en 1913 buscando otro material.',
+    'El algoritmo de YouTube está diseñado para que pases el mayor tiempo posible en la plataforma.',
+    'Los primeros relojes mecánicos no tenían minutero — solo mostraban las horas.',
+    'El internet "pesa" aproximadamente 50 gramos — el peso de los electrones en movimiento.',
+    'La primera cámara fotográfica comercial fue la Kodak, lanzada en 1888.',
+    'Los primeros cohetes espaciales fueron desarrollados originalmente como misiles militares.',
+    'En Japón hay máquinas expendedoras que venden desde fideos calientes hasta cangrejos vivos.',
+    // Música
+    'Beethoven compuso sus sinfonías más famosas cuando ya era completamente sordo.',
+    'La guitarra tiene más de 3.500 años de historia — los primeros modelos eran de solo 3 cuerdas.',
+    'Mozart compuso su primera sinfonía a los 8 años.',
+    'Un violín de concierto tiene más de 70 piezas de madera.',
+    'La canción "Happy Birthday" estuvo bajo copyright hasta 2016 — usarla comercialmente costaba dinero.',
+    'El theremin es el único instrumento musical que se toca sin tocarlo.',
+    'El piano tiene 88 teclas y más de 12.000 piezas individuales.',
+    'La música activa el mismo sistema de recompensa en el cerebro que la comida o el amor.',
+    'Freddie Mercury tenía 4 incisivos de más y según los expertos eso amplificaba su voz única.',
+    'Los Beatles vendieron más de 600 millones de álbumes en todo el mundo.',
+    'La nota musical más grave que puede escuchar un humano es de 20 Hz.',
+    'El metrónomo fue inventado en 1815 — antes, los músicos seguían solo el pulso del director.',
+    'La voz humana puede producir más de 300 sonidos diferentes.',
+    'El órgano es el instrumento musical más antiguo de Europa occidental — algunos tienen más de 500 años.',
+    'Escuchar música mientras hacés ejercicio mejora el rendimiento hasta un 15%.',
+    'Las plantas crecen más rápido cuando escuchan música clásica que con otros géneros.',
+    // Geografía y Tierra
+    'La Tierra tiene más de 4.500 millones de años.',
+    'El punto más profundo del océano, la Fosa de las Marianas, es más hondo que el Everest es alto.',
+    'El río Amazonas descarga tanta agua que puede detectarse agua dulce a 200 km de su delta.',
+    'El continente más seco de la Tierra es la Antártida — es técnicamente un desierto.',
+    'En Noruega, el sol no se pone durante semanas en verano en las zonas árticas.',
+    'El lago Baikal en Rusia contiene el 20% del agua dulce líquida de toda la Tierra.',
+    'La velocidad de rotación de la Tierra en el ecuador es de 1.670 km/h.',
+    'El Monte Everest crece unos 4 mm por año porque las placas tectónicas lo siguen empujando.',
+    'El Sahara no siempre fue un desierto — hace 5.000 años era una sabana verde con ríos y lagos.',
+    'La selva amazónica produce el 20% del oxígeno del planeta.',
+    'El estrecho de Bering entre Rusia y Alaska mide solo 85 km en su punto más angosto.',
+    'Islandia tiene más de 130 volcanes activos — una de las zonas más volcánicas del planeta.',
+    'Las placas tectónicas se mueven a la misma velocidad que crecen tus uñas.',
+    'El Monte Chimborazo en Ecuador, y no el Everest, es el punto más alejado del centro de la Tierra.',
+    'En la Antártida hay un río de agua salada que fluye a -0,5°C bajo el hielo.',
+    'Un árbol adulto libera suficiente oxígeno al día para que respiren dos personas.',
+    'Los árboles más viejos del mundo tienen más de 5.000 años — algunos existían cuando nació la escritura.',
+    'Los árboles se comunican entre sí a través de redes de hongos en el suelo — "el internet del bosque".',
+    'Las plantas producen compuestos químicos para alertar a otras plantas cuando son atacadas por insectos.',
+    'Las plantas carnívoras existen en todos los continentes excepto la Antártida.',
+    // Matemática
+    'El cero fue inventado en la India y llegó a Europa en el siglo XII a través de los árabes.',
+    'Un "googol" es el número 1 seguido de 100 ceros. El nombre Google viene de ahí.',
+    'Pi (π) tiene infinitos decimales que nunca se repiten — los primeros son 3,14159265…',
+    'En un grupo de solo 23 personas hay más del 50% de probabilidad de que dos compartan cumpleaños.',
+    'El número de combinaciones posibles en un cubo Rubik es mayor que la edad del universo en segundos.',
+    'Si dividís un número de Fibonacci por el anterior, el resultado se acerca al número áureo (1,618).',
+    'Hay más permutaciones posibles en una baraja de 52 cartas que átomos en la Tierra.',
+    'Los números primos son la base de la criptografía que protege tus contraseñas y pagos online.',
+    // Comida
+    'Las fresas no son técnicamente frutos — botánicamente son "falsos frutos".',
+    'El chocolate negro tiene más antioxidantes que el jugo de naranja.',
+    'Los tomates son frutas, no verduras — aunque se usen como verduras en la cocina.',
+    'Un aguacate es una fruta con más grasa saludable que la mayoría de las carnes.',
+    'El chile picante activa los mismos receptores de dolor que el calor físico.',
+    'Las papas vienen originalmente de Perú — los españoles las llevaron a Europa en el siglo XVI.',
+    'Un kiwi tiene más vitamina C que una naranja del mismo tamaño.',
+    'La quinoa fue el alimento principal de los Incas y la NASA la estudia para viajes espaciales.',
+    'El maíz fue cultivado hace 9.000 años en México — todas las variedades modernas vienen de una sola planta.',
+    'Las zanahorias originalmente eran moradas — las naranjas fueron seleccionadas en Holanda en honor a la casa real.',
+    'El sushi no es japonés de origen — empezó en el sudeste asiático como método de conservación de pescado.',
+    'El café es la segunda bebida más consumida del mundo, después del agua.',
+    'El helado fue inventado en China hace más de 700 años — con nieve de montaña y fruta.',
+    // Deporte
+    'El fútbol es el deporte más popular del mundo con más de 4.000 millones de fanáticos.',
+    'Usain Bolt corrió los 100 metros en 9,58 segundos — su velocidad máxima fue 44,72 km/h.',
+    'Michael Jordan fue cortado de su equipo de básquet en la secundaria y se convirtió en el mejor de la historia.',
+    'Un beisbolista tiene 0,4 segundos para decidir si pegarle a una pelota lanzada a 160 km/h.',
+    'Los Juegos Olímpicos modernos fueron idea de Pierre de Coubertin, un francés del siglo XIX.',
+    'La velocidad máxima de un saque de tenis supera los 260 km/h.',
+    'El ajedrez fue reconocido como deporte olímpico en 1999.',
+    // Curiosidades varias
+    'El botón de "cerrar puerta" en muchos ascensores no hace nada — está conectado pero desactivado.',
+    'El idioma con más palabras del mundo es el inglés, con más de 170.000 palabras en uso activo.',
+    'El libro más vendido de la historia después de la Biblia es Don Quijote de la Mancha.',
+    'Las personas que leen ficción tienen en promedio más empatía que las que no leen.',
+    'El cerebro no puede distinguir entre un recuerdo real y uno imaginado con suficiente detalle.',
+    'Soñamos en promedio 4-6 veces por noche pero olvidamos el 95% de los sueños al despertar.',
+    'El aburrimiento es la emoción que más impulsa la creatividad.',
+    'Reírse 100 veces equivale en esfuerzo cardiovascular a 10 minutos de remo.',
+    'El 40% de lo que creemos recordar sobre nuestra infancia son en realidad recuerdos falsos.',
+    'Dormir menos de 6 horas por noche durante una semana baja el rendimiento cognitivo como si estuvieras alcoholizado.',
+    'Leer antes de dormir reduce el estrés un 68% más que escuchar música.',
+    'Las personas bilingües desarrollan alzheimer en promedio 4-5 años más tarde.',
+    'Escribir a mano activa más partes del cerebro que tipear en una computadora.',
+    'La mente humana procesa imágenes 60.000 veces más rápido que texto.',
+    'Los humanos son los únicos animales que cocinan su comida.',
+    'El color favorito de la mayoría de las personas en el mundo es el azul, sin importar la cultura.',
+    'Un humano promedio pasa 6 meses de su vida esperando en semáforos en rojo.',
+    'El 65% del contenido de internet es en inglés aunque solo el 25% de los usuarios son anglohablantes.',
+    'Las personas que duermen más de 9 horas no descansan más — es señal de que algo no está bien.',
+    'El español es el segundo idioma más hablado del mundo en número de hablantes nativos.',
+    'El idioma más antiguo que todavía se habla es el tamil, con más de 5.000 años de historia.',
+    'Un día en la Tierra no dura exactamente 24 horas — dura 23 horas, 56 minutos y 4 segundos.',
+    'En Islandia no hay apellidos — los hijos llevan el nombre del padre más "son" o "dóttir".',
+    'La letra más usada en español es la "e".',
+    'El cerebro humano puede almacenar aproximadamente 2,5 petabytes — equivalente a 3 millones de horas de video.',
+    'El 90% de las especies que existieron en la Tierra ya están extintas.',
+    'Hay más bibliotecas en Estados Unidos que McDonald\'s.',
+    'Los limones flotan en el agua, pero las limas se hunden — tienen diferente densidad.',
+    'El polvo doméstico es en su mayoría células de piel muerta humana.',
+    'Los ratones cantan para comunicarse, pero en frecuencias que el oído humano no puede detectar.',
+    'Un rayo de luz solar que toca tu piel salió del núcleo del sol hace unos 100.000 años.',
+    'El primer email de la historia fue enviado por Ray Tomlinson a sí mismo como prueba.',
+    'La primera vez que el ser humano pudo ver su propio ADN fue recién en 1953.',
+    'La rana de madera de Alaska puede congelarse completamente en invierno y revivir en primavera.',
+    'Las ostras pueden cambiar de sexo varias veces a lo largo de su vida.',
+    'Un grillo puede "leer" la temperatura: contá sus chirridos en 14 segundos y sumá 40 — obtenés la temperatura en Fahrenheit.',
+    'Cada año hay más personas aprendiendo español en el mundo que hispanohablantes nativos.',
+    'El cerebro humano procesa 400.000 millones de bits por segundo, pero solo es consciente de 2.000.',
+    'Los cocodrilos pueden sobrevivir sin comer hasta 3 años.',
+    'Los pulpos pueden abrir frascos desde adentro, una vez encerrados en ellos.',
+    'El axolotl puede regenerar órganos enteros, incluyendo partes del corazón y del cerebro.',
+    'La rana dardo tiene veneno tan potente que bastan dos microgramos para matar a un humano adulto.',
+    'Los pingüinos son monógamos — muchas parejas se reencuentran en el mismo lugar cada año.',
+    'El ADN de todos los humanos vivos es un 99,9% idéntico.',
+    'El ser humano tarda unos 200 milisegundos en reaccionar visualmente a un estímulo.',
+    'Los teléfonos celulares tienen más gérmenes por centímetro cuadrado que un inodoro.',
+    'La mayoría de los colores que ven las flores no existen para el ojo humano — los insectos ven en ultravioleta.',
+    'El cerebro humano tiene unos 86.000 millones de neuronas, cada una conectada a miles de otras.',
+    'Las hormigas toman cientos de microsiestás de 1 minuto a lo largo del día en lugar de dormir seguido.',
+    'Una sola neurona puede conectarse con hasta 10.000 otras neuronas.',
+    'El primer robot industrial fue instalado en una fábrica de General Motors en 1961.',
+    'Los bebés humanos nacen con más neuronas de las que tendrán de adultos — el cerebro "poda" las menos usadas.',
+    'La piel humana es impermeable gracias a una proteína llamada queratina.',
+    'Los árboles del bosque comparten nutrientes entre sí a través de redes de hongos subterráneos.',
+    'Un agujero negro del tamaño de una moneda tendría la masa equivalente a la Tierra.',
+    'El cerebro del bebé es 3 veces más activo que el de un adulto — aprende a una velocidad increíble.',
+    'Las mariposas monarca vuelan más de 4.500 km desde Canadá a México cada año.',
+    'El polo norte de Urano es la región más fría del sistema solar, con -224°C.',
+    'El universo es tan grande que la luz tarda 93.000 millones de años luz en cruzarlo de lado a lado.',
+    'La primera persona en circunnavegar el globo fue Elcano, el capitán que completó el viaje de Magallanes.',
+    'El maíz no existe en la naturaleza salvaje — es una creación humana de miles de años de selección.',
+    'Los pingüinos tienen plumas, no pelaje — y son impermeables al agua fría.',
+    'El número de moléculas de agua en una gota es mayor que el número de gotas en todos los océanos.',
+  ];
+
+  (function mostrarDatoCurioso() {
+    const hoy   = new Date();
+    const inicio = new Date(hoy.getFullYear(), 0, 0);
+    const diaDelAnio = Math.floor((hoy - inicio) / 86400000); // 1-365
+    const idx   = (diaDelAnio - 1 + DATOS_CURIOSOS.length) % DATOS_CURIOSOS.length;
+    document.getElementById('dato-texto').textContent = DATOS_CURIOSOS[idx];
+    document.getElementById('dato-num').textContent   = `#${diaDelAnio}`;
+  })();
+
   // ── Mini-juego: Agarrá los bichos ───────────────────────
   const BICHOS = ['🐛','🐞','🦋','🐸','🐢','🦎','🐙','🦑','🦀','🦊','🐰','🐭','🐱','🐶','🦔'];
 
