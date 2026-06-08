@@ -1,4 +1,4 @@
-# 🏕️ Campers App `v2.1.0`
+# 🏕️ Campers App `v2.3.0`
 
 App familiar para que Salvador y Eva registren sus tareas diarias desde el celular.
 
@@ -104,7 +104,7 @@ GitHub Pages actualiza el sitio en ~1 minuto.
 
 ## 📜 El Manifiesto — No dejes que las máquinas elijan tu futuro
 
-> *Un llamado a Salvador y Eva Vicente De Pedro para que sean los arquitectos del mañana, no sus espectadores.*
+> *Un llamado a Salvador y Eva para que sean los arquitectos del mañana, no sus espectadores.*
 
 ⚡ **Están viviendo el momento más importante de la historia humana.** La inteligencia artificial va a cambiar todo — los trabajos, la medicina, la ciencia, la música, el arte. La pregunta no es *si* va a pasar. Ya está pasando. La pregunta es: **¿van a ser los que programan el futuro, o los que simplemente lo usan?**
 
@@ -155,7 +155,9 @@ Tender la cama, ordenar la mochila, hacer las tareas — no son reglas caprichos
 
 | Versión | Fecha | Cambios |
 |---|---|---|
-| **v2.1.0** | Jun 2026 | 📅 Tareas diferenciadas por día · 🙈 Sin Uniformes ni Mochila los fines de semana · 📖 Card de Lectura con resumen los fines de semana · 📝 Tareas colegio adaptadas el domingo |
+| **v2.3.0** | Jun 2026 | 💡 Dato curioso del día (365 datos, cambia a medianoche) · 🎮 Mini-juego "Agarrá los bichos" con puntos · 📅 Tareas diferenciadas por día · 📖 Card de Lectura los fines de semana |
+| **v2.2.0** | Jun 2026 | 🎮 Mini-juego whack-a-mole de emojis · puntos según score · anti-farming diario |
+| **v2.1.0** | Jun 2026 | 📅 Tareas diferenciadas por día · 🙈 Sin Uniformes ni Mochila los fines de semana · 📖 Card de Lectura con resumen · 📝 Tareas colegio adaptadas el domingo |
 | **v2.0.0** | Jun 2026 | 🏆 Ranking familiar · 🎁 Sistema de recompensas · 😊 Estado de ánimo diario · 📜 Manifiesto en el header |
 | **v1.2.0** | Jun 2026 | 📅 Calendario en español · 📜 Manifiesto familiar |
 | **v1.1.0** | Jun 2026 | ⭐ Puntos y niveles · 🔥 Racha de días seguidos |
