@@ -1,4 +1,4 @@
-# 🏕️ Campers App `v2.0.0`
+# 🏕️ Campers App `v2.1.0`
 
 App familiar para que Salvador y Eva registren sus tareas diarias desde el celular.
 
@@ -155,6 +155,7 @@ Tender la cama, ordenar la mochila, hacer las tareas — no son reglas caprichos
 
 | Versión | Fecha | Cambios |
 |---|---|---|
+| **v2.1.0** | Jun 2026 | 📅 Tareas diferenciadas por día · 🙈 Sin Uniformes ni Mochila los fines de semana · 📖 Card de Lectura con resumen los fines de semana · 📝 Tareas colegio adaptadas el domingo |
 | **v2.0.0** | Jun 2026 | 🏆 Ranking familiar · 🎁 Sistema de recompensas · 😊 Estado de ánimo diario · 📜 Manifiesto en el header |
 | **v1.2.0** | Jun 2026 | 📅 Calendario en español · 📜 Manifiesto familiar |
 | **v1.1.0** | Jun 2026 | ⭐ Puntos y niveles · 🔥 Racha de días seguidos |
