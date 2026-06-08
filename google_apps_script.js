@@ -12,10 +12,17 @@
 //    - Ejecutar como: Yo (tu cuenta)
 //    - Quién tiene acceso: Cualquier usuario
 // 7. Click en "Implementar" y copiá la URL que aparece
-// 8. Pegá esa URL en tareas_diarias.html donde dice PEGAR_URL_AQUI
+// 8. Pegá esa URL en index.html donde dice SHEETS_URL
 // =====================================================
 
 const SHEET_NAME = 'Registros';
+
+const HEADERS = [
+  'Timestamp', 'Nombre', 'Fecha', 'Ánimo',
+  'Uniformes', 'Mochila', 'Dormitorio',
+  'Tareas Colegio', 'Música', 'Dientes',
+  'Lectura', 'Resumen Lectura'
+];
 
 function doPost(e) {
   try {
@@ -25,13 +32,8 @@ function doPost(e) {
     // Crear la hoja con encabezados si no existe
     if (!sheet) {
       sheet = ss.insertSheet(SHEET_NAME);
-      sheet.appendRow([
-        'Timestamp', 'Nombre', 'Fecha', 'Ánimo',
-        'Uniformes', 'Mochila', 'Dormitorio',
-        'Tareas Colegio', 'Música', 'Dientes',
-        'Lectura', 'Resumen Lectura'
-      ]);
-      sheet.getRange(1, 1, 1, 12).setFontWeight('bold');
+      sheet.appendRow(HEADERS);
+      sheet.getRange(1, 1, 1, HEADERS.length).setFontWeight('bold');
     }
 
     const datos = JSON.parse(e.postData.contents);
@@ -67,4 +69,17 @@ function doGet() {
   return ContentService
     .createTextOutput('Campers App Script activo ✅')
     .setMimeType(ContentService.MimeType.TEXT);
+}
+
+// Ejecutar una vez para corregir los encabezados de la hoja
+function fixSheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME);
+  }
+  sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
+  sheet.getRange(1, 1, 1, HEADERS.length).setFontWeight('bold');
+  SpreadsheetApp.flush();
+  Logger.log('Headers fijados: ' + HEADERS.join(', '));
 }
