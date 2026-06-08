@@ -123,6 +123,26 @@
     .icon-musica { background: #f3e5f5; }
     .icon-dientes { background: #e0f7fa; }
     .icon-celular { background: #fff9c4; }
+    .icon-lectura { background: #e8f5e9; }
+
+    /* Textarea de resumen */
+    .lectura-memo {
+      width: 100%;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border: 2px solid #e8e8f0;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: var(--text);
+      background: #fafafa;
+      resize: vertical;
+      min-height: 90px;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .lectura-memo:focus { border-color: var(--primary); background: #fff; }
+    .lectura-memo::placeholder { color: var(--muted); }
 
     /* Selector de nombre */
     .name-selector { display: flex; gap: 12px; margin-bottom: 4px; }
@@ -633,6 +653,41 @@
     </div>
   </div>
 
+  <!-- LECTURA (solo fines de semana) -->
+  <div class="card" id="card-lectura" style="display:none">
+    <div class="card-header">
+      <div class="card-icon icon-lectura">📖</div>
+      <div class="card-title">Lectura <span class="required">*</span></div>
+    </div>
+    <div class="radio-list">
+      <label class="radio-item">
+        <input type="radio" name="lectura" value="no_lei" />
+        <span class="radio-circle"></span>
+        <span class="radio-emoji">😔</span>
+        <span class="radio-text">No leí hoy</span>
+      </label>
+      <label class="radio-item">
+        <input type="radio" name="lectura" value="un_rato" />
+        <span class="radio-circle"></span>
+        <span class="radio-emoji">📖</span>
+        <span class="radio-text">Un rato (menos de 20 min)</span>
+      </label>
+      <label class="radio-item">
+        <input type="radio" name="lectura" value="bien" />
+        <span class="radio-circle"></span>
+        <span class="radio-emoji">📚</span>
+        <span class="radio-text">Leí bien (20 min o más)</span>
+      </label>
+      <label class="radio-item">
+        <input type="radio" name="lectura" value="enganchado" />
+        <span class="radio-circle"></span>
+        <span class="radio-emoji">🤓</span>
+        <span class="radio-text">Me enganchó — 1 hora o más</span>
+      </label>
+    </div>
+    <textarea id="resumen-lectura" class="lectura-memo" placeholder="¿Qué leíste? Escribí un resumen corto de lo que te pareció más interesante..."></textarea>
+  </div>
+
   <!-- MÚSICA -->
   <div class="card">
     <div class="card-header">
@@ -760,6 +815,7 @@
     // Uniformes y Mochila: ocultar en fines de semana
     document.getElementById('card-uniformes').style.display = esFinDeSemana ? 'none' : '';
     document.getElementById('card-mochila').style.display   = esFinDeSemana ? 'none' : '';
+    document.getElementById('card-lectura').style.display   = esFinDeSemana ? '' : 'none';
 
     // Tareas colegio: texto especial el domingo
     document.getElementById('tareas-texto-1').textContent = esDomingo
@@ -825,6 +881,9 @@
     // Dientes
     const d = document.querySelector('input[name="dientes"]:checked');
     if (d) pts += d.value === 'perfecto' ? 20 : d.value === 'bien' ? 15 : d.value === 'mas_o_menos' ? 5 : 0;
+    // Lectura (solo fines de semana)
+    const l = document.querySelector('input[name="lectura"]:checked');
+    if (l) pts += l.value === 'enganchado' ? 25 : l.value === 'bien' ? 15 : l.value === 'un_rato' ? 5 : 0;
     return pts;
   }
 
@@ -922,6 +981,8 @@
       tareas:     getCheckedText('tareas'),
       musica:     getRadioText('musica'),
       dientes:    getRadioText('dientes'),
+      lectura:    getRadioText('lectura') || '',
+      resumenLectura: (document.getElementById('resumen-lectura').value || '').trim(),
     };
 
     const btn = document.getElementById('btnSubmit');
@@ -997,6 +1058,7 @@
     adaptarFormularioAlDia(nuevaFecha);
     document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
     document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+    document.getElementById('resumen-lectura').value = '';
     document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
     document.getElementById('animo').value = '';
     mostrarRecompensas('');
