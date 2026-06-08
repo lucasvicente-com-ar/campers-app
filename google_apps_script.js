@@ -28,24 +28,27 @@ function doPost(e) {
       sheet.appendRow([
         'Timestamp', 'Nombre', 'Fecha', 'Ánimo',
         'Uniformes', 'Mochila', 'Dormitorio',
-        'Tareas Colegio', 'Música', 'Dientes'
+        'Tareas Colegio', 'Música', 'Dientes',
+        'Lectura', 'Resumen Lectura'
       ]);
-      sheet.getRange(1, 1, 1, 10).setFontWeight('bold');
+      sheet.getRange(1, 1, 1, 12).setFontWeight('bold');
     }
 
     const datos = JSON.parse(e.postData.contents);
 
     sheet.appendRow([
       new Date(),
-      datos.nombre     || '',
-      datos.fecha      || '',
-      datos.animo      || '',
-      datos.uniformes  || '',
-      datos.mochila    || '',
-      datos.dormitorio || '',
-      datos.tareas     || '',
-      datos.musica     || '',
-      datos.dientes    || '',
+      datos.nombre          || '',
+      datos.fecha           || '',
+      datos.animo           || '',
+      datos.uniformes       || '',
+      datos.mochila         || '',
+      datos.dormitorio      || '',
+      datos.tareas          || '',
+      datos.musica          || '',
+      datos.dientes         || '',
+      datos.lectura         || '',
+      datos.resumenLectura  || '',
     ]);
 
     return ContentService
