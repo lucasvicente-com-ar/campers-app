@@ -574,7 +574,7 @@
   </div>
 
   <!-- MOCHILA -->
-  <div class="card">
+  <div class="card" id="card-mochila">
     <div class="card-header">
       <div class="card-icon icon-mochila">🎒</div>
       <div class="card-title">Mochila <span class="required">*</span></div>
@@ -757,8 +757,9 @@
     const esFinDeSemana = dia === 0 || dia === 6;
     const esDomingo = dia === 0;
 
-    // Uniformes: ocultar en fines de semana
+    // Uniformes y Mochila: ocultar en fines de semana
     document.getElementById('card-uniformes').style.display = esFinDeSemana ? 'none' : '';
+    document.getElementById('card-mochila').style.display   = esFinDeSemana ? 'none' : '';
 
     // Tareas colegio: texto especial el domingo
     document.getElementById('tareas-texto-1').textContent = esDomingo
