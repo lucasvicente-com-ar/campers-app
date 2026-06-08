@@ -124,6 +124,7 @@
     .icon-dientes { background: #e0f7fa; }
     .icon-celular { background: #fff9c4; }
     .icon-lectura { background: #e8f5e9; }
+    .icon-juego   { background: #fef3c7; }
 
     /* Textarea de resumen */
     .lectura-memo {
@@ -349,6 +350,156 @@
       cursor: pointer;
     }
 
+    /* ── Mini-juego ─────────────────────────────────────── */
+    .btn-jugar {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--primary), var(--grad-end));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      transition: transform 0.1s, opacity 0.2s;
+    }
+    .btn-jugar:active { transform: scale(0.97); }
+    .juego-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+    .game-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.88);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    .game-overlay.active { display: flex; }
+    .game-box {
+      background: var(--card);
+      border-radius: 28px;
+      padding: 24px 20px 28px;
+      width: min(340px, 94vw);
+      position: relative;
+    }
+    .game-hud {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+    }
+    .game-hud-item { text-align: center; }
+    .game-hud-label {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .game-hud-value {
+      display: block;
+      font-size: 2.6rem;
+      font-weight: 900;
+      color: var(--primary);
+      line-height: 1;
+    }
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .game-cell {
+      aspect-ratio: 1;
+      background: #f0f0f8;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.4rem;
+      cursor: pointer;
+      transition: background 0.1s, transform 0.08s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      border: 2px solid transparent;
+    }
+    .game-cell.active {
+      background: #e8ecff;
+      border-color: var(--primary);
+      animation: bicho-pop 0.15s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .game-cell:active { transform: scale(0.88); }
+    @keyframes bicho-pop {
+      from { transform: scale(0.4); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    .game-cerrar {
+      position: absolute;
+      top: 14px; right: 16px;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      color: var(--muted);
+      cursor: pointer;
+      line-height: 1;
+      padding: 2px 4px;
+    }
+    .game-resultado {
+      text-align: center;
+      padding: 10px 0 4px;
+    }
+    .game-resultado-emoji { font-size: 3.5rem; margin-bottom: 10px; }
+    .game-resultado-msg {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+    .game-resultado-score {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .game-resultado-pts {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary), var(--grad-end));
+      color: white;
+      font-weight: 800;
+      font-size: 1.05rem;
+      border-radius: 99px;
+      padding: 8px 22px;
+      margin-bottom: 18px;
+    }
+    .game-btns { display: flex; gap: 10px; }
+    .game-btn-retry {
+      flex: 1;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--primary), var(--grad-end));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .game-btn-salir {
+      flex: 1;
+      padding: 13px;
+      background: #f0f0f8;
+      color: var(--muted);
+      border: none;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
     /* Transición de tema */
     header, .btn-submit, .name-btn.selected, .check-item input:checked ~ .check-box,
     .radio-item input:checked ~ .radio-circle, input:focus { transition: all 0.35s; }
@@ -568,6 +719,16 @@
     </div>
   </div>
 
+  <!-- MINI-JUEGO -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon icon-juego">🎮</div>
+      <div class="card-title">Mini-juego</div>
+    </div>
+    <p class="juego-desc">¡Agarrá todos los bichos antes de que escapen! 30 segundos. Ganás puntos según cuántos atrapes — pero solo una vez por día.</p>
+    <button class="btn-jugar" onclick="iniciarJuego()">▶ ¡Jugar!</button>
+  </div>
+
   <!-- UNIFORMES -->
   <div class="card" id="card-uniformes">
     <div class="card-header">
@@ -783,6 +944,48 @@
 </div>
 
 <!-- MODAL ÉXITO -->
+<!-- OVERLAY JUEGO -->
+<div class="game-overlay" id="gameOverlay">
+  <div class="game-box">
+    <button class="game-cerrar" onclick="cerrarJuego()">✕</button>
+
+    <div id="game-playing">
+      <div class="game-hud">
+        <div class="game-hud-item">
+          <span class="game-hud-label">Bichos</span>
+          <span class="game-hud-value" id="game-score">0</span>
+        </div>
+        <div class="game-hud-item">
+          <span class="game-hud-label">Tiempo</span>
+          <span class="game-hud-value" id="game-tiempo">30</span>
+        </div>
+      </div>
+      <div class="game-grid">
+        <div class="game-cell" data-i="0" onclick="tapBicho(0)"></div>
+        <div class="game-cell" data-i="1" onclick="tapBicho(1)"></div>
+        <div class="game-cell" data-i="2" onclick="tapBicho(2)"></div>
+        <div class="game-cell" data-i="3" onclick="tapBicho(3)"></div>
+        <div class="game-cell" data-i="4" onclick="tapBicho(4)"></div>
+        <div class="game-cell" data-i="5" onclick="tapBicho(5)"></div>
+        <div class="game-cell" data-i="6" onclick="tapBicho(6)"></div>
+        <div class="game-cell" data-i="7" onclick="tapBicho(7)"></div>
+        <div class="game-cell" data-i="8" onclick="tapBicho(8)"></div>
+      </div>
+    </div>
+
+    <div class="game-resultado" id="game-resultado" style="display:none">
+      <div class="game-resultado-emoji" id="game-emoji-final">🎉</div>
+      <div class="game-resultado-msg" id="game-msg"></div>
+      <div class="game-resultado-score" id="game-score-final"></div>
+      <div class="game-resultado-pts" id="game-pts-ganados"></div>
+      <div class="game-btns">
+        <button class="game-btn-retry" onclick="iniciarJuego()">▶ Otra vez</button>
+        <button class="game-btn-salir" onclick="cerrarJuego()">✕ Salir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modalOverlay" onclick="cerrarModal(event)">
   <div class="modal">
     <div class="modal-emoji" id="modalEmoji">🎉</div>
@@ -1163,6 +1366,147 @@
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js');
+  }
+</script>
+
+<script>
+  // ── Mini-juego: Agarrá los bichos ───────────────────────
+  const BICHOS = ['🐛','🐞','🦋','🐸','🐢','🦎','🐙','🦑','🦀','🦊','🐰','🐭','🐱','🐶','🦔'];
+
+  let jActivo    = false;
+  let jScore     = 0;
+  let jSegundos  = 30;
+  let jVelocidad = 1200;
+  let jCeldaActiva = -1;
+  let jTimerCuenta = null;
+  let jTimerBicho  = null;
+
+  function iniciarJuego() {
+    const nombre = document.getElementById('nombre').value.trim();
+    if (!nombre) { alert('👤 Primero elegí quién va a jugar.'); return; }
+
+    // Reset estado
+    jActivo = true; jScore = 0; jSegundos = 30; jVelocidad = 1200; jCeldaActiva = -1;
+    clearInterval(jTimerCuenta);
+    clearTimeout(jTimerBicho);
+
+    // Mostrar overlay, ocultar resultado
+    document.getElementById('gameOverlay').classList.add('active');
+    document.getElementById('game-playing').style.display  = 'block';
+    document.getElementById('game-resultado').style.display = 'none';
+    document.getElementById('game-score').textContent   = '0';
+    document.getElementById('game-tiempo').textContent  = '30';
+    document.querySelectorAll('.game-cell').forEach(c => {
+      c.classList.remove('active'); c.textContent = '';
+    });
+
+    // Countdown
+    jTimerCuenta = setInterval(() => {
+      jSegundos--;
+      document.getElementById('game-tiempo').textContent = jSegundos;
+      if (jSegundos === 20) jVelocidad = 1000;
+      if (jSegundos === 15) jVelocidad = 800;
+      if (jSegundos === 10) jVelocidad = 650;
+      if (jSegundos ===  5) jVelocidad = 480;
+      if (jSegundos <=  0)  terminarJuego(nombre);
+    }, 1000);
+
+    mostrarBicho();
+  }
+
+  function mostrarBicho() {
+    if (!jActivo) return;
+    // Limpiar anterior
+    if (jCeldaActiva >= 0) {
+      const prev = document.querySelector(`.game-cell[data-i="${jCeldaActiva}"]`);
+      if (prev) { prev.classList.remove('active'); prev.textContent = ''; }
+    }
+    // Elegir celda distinta a la anterior
+    let i;
+    do { i = Math.floor(Math.random() * 9); } while (i === jCeldaActiva);
+    jCeldaActiva = i;
+    const cell = document.querySelector(`.game-cell[data-i="${i}"]`);
+    if (cell) {
+      cell.textContent = BICHOS[Math.floor(Math.random() * BICHOS.length)];
+      cell.classList.add('active');
+    }
+    jTimerBicho = setTimeout(mostrarBicho, jVelocidad);
+  }
+
+  function tapBicho(i) {
+    if (!jActivo || jCeldaActiva !== i) return;
+    jScore++;
+    document.getElementById('game-score').textContent = jScore;
+    const cell = document.querySelector(`.game-cell[data-i="${i}"]`);
+    if (cell) {
+      cell.classList.remove('active');
+      cell.textContent = '✨';
+      setTimeout(() => { if (!cell.classList.contains('active')) cell.textContent = ''; }, 220);
+    }
+    clearTimeout(jTimerBicho);
+    jCeldaActiva = -1;
+    mostrarBicho();
+  }
+
+  function terminarJuego(nombre) {
+    jActivo = false;
+    clearInterval(jTimerCuenta);
+    clearTimeout(jTimerBicho);
+    document.querySelectorAll('.game-cell').forEach(c => {
+      c.classList.remove('active'); c.textContent = '';
+    });
+
+    // Puntos (solo una vez por día)
+    const hoy = new Date().toISOString().slice(0, 10);
+    const keyHoy = `juego_${nombre}_${hoy}`;
+    const yaJugo = localStorage.getItem(keyHoy);
+
+    let ptsGanados = 0;
+    if (!yaJugo) {
+      if      (jScore >= 40) ptsGanados = 30;
+      else if (jScore >= 30) ptsGanados = 20;
+      else if (jScore >= 20) ptsGanados = 15;
+      else if (jScore >= 10) ptsGanados = 10;
+      else if (jScore >=  5) ptsGanados = 5;
+
+      if (ptsGanados > 0) {
+        localStorage.setItem(keyHoy, '1');
+        savePuntos(nombre, getPuntos(nombre) + ptsGanados);
+        mostrarNivel(nombre);
+        actualizarRanking();
+      }
+    }
+
+    // Mensaje y emojis según score
+    const msgs = [
+      { min: 40, emoji: '🔥', msg: '¡Sos una máquina!' },
+      { min: 30, emoji: '⭐', msg: '¡Excelente puntería!' },
+      { min: 20, emoji: '👍', msg: '¡Bien jugado!' },
+      { min: 10, emoji: '😊', msg: '¡Nada mal!' },
+      { min:  0, emoji: '💪', msg: '¡Seguí practicando!' },
+    ];
+    const r = msgs.find(m => jScore >= m.min);
+
+    document.getElementById('game-emoji-final').textContent = r.emoji;
+    document.getElementById('game-msg').textContent         = r.msg;
+    document.getElementById('game-score-final').textContent = `${jScore} bichos atrapados`;
+    document.getElementById('game-pts-ganados').textContent =
+      yaJugo       ? '⏳ Ya jugaste hoy — volvé mañana' :
+      ptsGanados > 0 ? `+${ptsGanados} puntos para ${nombre} 🎉` :
+                     '¡Atrapá 5 o más para ganar puntos!';
+
+    document.getElementById('game-playing').style.display   = 'none';
+    document.getElementById('game-resultado').style.display = 'block';
+  }
+
+  function cerrarJuego() {
+    jActivo = false;
+    clearInterval(jTimerCuenta);
+    clearTimeout(jTimerBicho);
+    document.querySelectorAll('.game-cell').forEach(c => {
+      c.classList.remove('active'); c.textContent = '';
+    });
+    document.getElementById('gameOverlay').classList.remove('active');
   }
 </script>
 </body>
